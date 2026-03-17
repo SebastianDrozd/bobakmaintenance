@@ -1,0 +1,52 @@
+.container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card{
+    padding: 10em;
+}
+.title{
+    margin-bottom: 1em;
+    font-size: 4em;
+}
+.inputField{
+    padding: 1em;
+    border-radius: 10px;
+    border: 1px solid rgb(177, 176, 176);
+}
+.formContents{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1em;
+}
+.loginBtn{
+    background-color: black;
+    color: white;
+    padding: 1em;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.disclosure{
+    margin: 0 auto;
+    font-weight: 200;
+    color: rgb(120, 120, 120);
+}
+.link{
+    text-decoration: underline;
+    font-weight: bold;
+    margin-left: 2em;
+    margin: 0 auto;
+}
+.err{
+    opacity: 0;
+    color: crimson;
+    margin: 0 auto;
+    transition: opacity 0.8s ease-in-out;
+}
+.errShow{
+    opacity: 1;
+}

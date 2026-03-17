@@ -1,6 +1,6 @@
 "use client";
 
-import { getUser } from "@/api/auth";
+import { getUser, loginUser } from "@/api/auth";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useRouter } from "next/navigation";
 
@@ -12,8 +12,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-    const test = true;
-
+  const test = true;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,7 +33,7 @@ const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
   if (isLoading) {
-    return <LoadingSpinner/>
+    return <LoadingSpinner />;
   }
   return (
     <AuthContext.Provider value={{ isLoading, user }}>

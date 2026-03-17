@@ -1,29 +1,78 @@
-'use client'
+"use client";
 import { loginUser } from "@/api/auth";
 import { AuthContext } from "@/util/AuthProvider";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react"
-
+import { useContext, useState } from "react";
+import styles from "../../../styles/LoginPage.module.css";
 const LoginPage = () => {
-    const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
-    const auth = useContext(AuthContext);
-    const router = useRouter();
-    const handleLogin = () => {
-        const login = {
-            username,
-            password
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isErr, setIsErr] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+  const router = useRouter();
+
+  const handleLogin = () => {
+    const login = {
+      username,
+      password,
+    };
+
+    loginUser(login)
+      .then((data) => {
+        console.log("data", data);
+        router.replace("/dashboard");
+      })
+      .catch((err) => {
+        if (err.status == 400) {
+          setIsErr(true);
+          setErrMessage("Username/Password can't be blank");
         }
-        loginUser(login)
-    }
+        if (err.status == 401) {
+          setIsErr(true);
+          setErrMessage("Invalid Credentials");
+        }
+      });
+  };
 
-return (
-    <div>
-        <input value={username}  placeholder="username" onChange={e => setUsername(e.target.value)}/>
-        <input value={password} placeholder="password" onChange={e => setPassword(e.target.value)} />
-        <button onClick={handleLogin }>Login</button>
-    </div>
-)
-}
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleLogin();
+      }}
+      className={styles.container}
+    >
+      <div className={styles.card}>
+        <h1 className={styles.title}>Maintenance</h1>
+        <div className={styles.formContents}>
+          <input
+            className={styles.inputField}
+            value={username}
+            placeholder="username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            className={styles.inputField}
+            value={password}
+            type="password"
+            placeholder="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className={styles.loginBtn} onClick={handleLogin}>
+            Login
+          </button>
+          <p className={styles.disclosure}>
+            Trouble signing in? Contact{" "}
+            <a className={styles.link}>IT@bobak.com</a>
+          </p>
 
-export default LoginPage
+          <p className={`${styles.err} ${isErr && styles.errShow}`}>
+            {errMessage}
+          </p>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export default LoginPage;
