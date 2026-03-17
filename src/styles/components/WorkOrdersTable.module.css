@@ -1,0 +1,70 @@
+.container {
+  margin-top: 5em;
+}
+
+.searchRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.inputField {
+  width: 75%;
+  padding: 0.8em 1rem;
+  border: 1px solid rgb(194, 193, 193);
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.btnRow {
+  display: flex;
+  gap: 1em;
+}
+
+.btn {
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid rgb(194, 193, 193);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.tableWrapper {
+  margin-top: 2rem;
+  background: white;
+  border: 1px solid rgb(228, 228, 231);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.woTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeaders th {
+  text-align: left;
+  color: rgb(113, 113, 122);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 1rem;
+  background-color: rgb(250, 250, 250);
+  border-bottom: 1px solid rgb(228, 228, 231);
+}
+
+.tableRow td {
+  padding: 1rem;
+  border-bottom: 1px solid rgb(240, 240, 240);
+  font-size: 0.95rem;
+  color: rgb(39, 39, 42);
+  vertical-align: middle;
+}
+
+.tableRow:last-child td {
+  border-bottom: none;
+}

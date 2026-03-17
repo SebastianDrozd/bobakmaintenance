@@ -1,0 +1,39 @@
+.container{
+    display: flex;
+    margin-top: 5em;
+}
+.card{
+    width: 450px;
+    border: 1px solid rgba(189, 188, 188, 0.62);
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    max-height: 110px;
+  
+}
+.card1{
+      border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.card2{
+    background-color: rgba(233, 242, 242, 0.366);
+}
+.card3{
+    background-color: rgba(174, 189, 189, 0.373);
+}
+.card4{
+    background-color: rgba(209, 194, 228, 0.318);
+   border-top-right-radius: 20px;
+   border-bottom-right-radius: 20px;
+}
+.sub{
+    font-weight: 300;
+    color: rgba(123, 121, 121, 0.616);
+}
+.square{
+    border: 1px solid rgb(221, 220, 220);
+    padding: 1em;
+    border-radius: 10px;
+    background-color: white;
+}

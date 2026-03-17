@@ -1,5 +1,18 @@
-.container{
-    height: 100vh;
-    grid-row: 1/2;
-    background-color: rgb(248, 241, 250);
+.container {
+    grid-row: 1/4;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(224, 222, 222);
+    padding: 1em;
+}
+.listContainer{
+
+}
+.list{
+    list-style: none;
+}
+.listItem{
+    margin-top: 2em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
 }
