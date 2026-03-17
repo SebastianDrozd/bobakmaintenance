@@ -1,11 +1,14 @@
 'use client'
 import { loginUser } from "@/api/auth";
-import { useState } from "react"
+import { AuthContext } from "@/util/AuthProvider";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react"
 
 const LoginPage = () => {
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
-
+    const auth = useContext(AuthContext);
+    const router = useRouter();
     const handleLogin = () => {
         const login = {
             username,
