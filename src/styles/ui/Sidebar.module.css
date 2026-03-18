@@ -1,19 +1,115 @@
 .container {
-    grid-row: 1/4;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(224, 222, 222);
-    padding: 1em;
+  grid-row: 1 / 4;
+  min-height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #eef2f7;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
-.listContainer{
 
+.topSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px 18px;
+  border-bottom: 1px solid #f1f5f9;
 }
-.list{
-    list-style: none;
+
+.logoBox {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
-.listItem{
-    margin-top: 2em;
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    cursor: pointer;
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionLabel {
+  margin: 0;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.listItem:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.listItem svg {
+  flex-shrink: 0;
+}
+
+.active {
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 600;
+  border: 1px solid #eef2f7;
+}
+
+@media (max-width: 900px) {
+  .container {
+    min-height: auto;
+    padding: 16px 14px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .listItem {
+    padding: 11px 12px;
+  }
 }

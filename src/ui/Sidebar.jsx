@@ -1,21 +1,57 @@
-import { ChartAreaIcon, Factory, File, House, ReceiptPoundSterling } from "lucide-react";
+import {
+  ChartAreaIcon,
+  Factory,
+  File,
+  House,
+  ReceiptPoundSterling,
+  Wrench,
+} from "lucide-react";
 import styles from "../styles/ui/Sidebar.module.css";
+
 const Sidebar = () => {
   return (
-    <div className={styles.container}>
-      <div>
-        <h2>Maintenance</h2>
+    <aside className={styles.container}>
+      <div className={styles.topSection}>
+        <div className={styles.logoBox}>
+          <Wrench size={18} />
+        </div>
+        <div>
+          <p className={styles.eyebrow}>Operations</p>
+          <h2 className={styles.title}>Maintenance</h2>
+        </div>
       </div>
-      <div className={styles.listContainer}>
+
+      <nav className={styles.nav}>
+        <p className={styles.sectionLabel}>Navigation</p>
+
         <ul className={styles.list}>
-          <li className={styles.listItem}><House/>   Home</li>
-          <li className={styles.listItem}><ChartAreaIcon/>  Preventative Maintenance</li>
-          <li className={styles.listItem}><Factory/> Assets</li>
-          <li className={styles.listItem}><File/> Statistics</li>
-          <li className={styles.listItem}><ReceiptPoundSterling/>Reports</li>
+          <li className={`${styles.listItem} ${styles.active}`}>
+            <House size={18} />
+            <span>Home</span>
+          </li>
+
+          <li className={styles.listItem}>
+            <ChartAreaIcon size={18} />
+            <span>Preventative Maintenance</span>
+          </li>
+
+          <li className={styles.listItem}>
+            <Factory size={18} />
+            <span>Assets</span>
+          </li>
+
+          <li className={styles.listItem}>
+            <File size={18} />
+            <span>Statistics</span>
+          </li>
+
+          <li className={styles.listItem}>
+            <ReceiptPoundSterling size={18} />
+            <span>Reports</span>
+          </li>
         </ul>
-      </div>
-    </div>
+      </nav>
+    </aside>
   );
 };
 

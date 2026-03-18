@@ -2,19 +2,22 @@
     height: 60px;
     grid-column: 2 /3;
     background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(224, 222, 222);
     display: flex;
     justify-content: space-between;
-    padding: 1em;
+    align-items: center;
+    padding: 2em;
+    border-bottom: 20px solid #000000;
 }
 .newBtn{
     background-color: black;
     color: white;
-    padding:  15px 30px 15px 30px;
+    padding:  5px 20px 5px 20px;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1rem;
     font-weight: bold;
+    cursor: pointer;
+    
 }
