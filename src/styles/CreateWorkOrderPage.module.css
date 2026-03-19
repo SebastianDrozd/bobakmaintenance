@@ -223,3 +223,175 @@
     width: 100%;
   }
 }
+
+.photoUploadCard {
+  border: 1px solid #eef2f7;
+  border-radius: 18px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.photoUploadTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.photoUploadIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.photoUploadTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.photoUploadText {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.photoDropzone {
+  display: block;
+  margin: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.photoDropzone:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.photoDropzone:active {
+  background: #eef2f7;
+}
+
+.photoDropzoneInner {
+  min-height: 180px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.photoDropzoneIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.photoDropzoneTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.photoDropzoneText {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.photoPreviewGrid {
+  display: grid;
+  gap: 12px;
+  padding: 0 18px 18px;
+}
+
+.photoPreviewItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #eef2f7;
+  border-radius: 14px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.photoPreviewThumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.photoPreviewMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.photoName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photoSize {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.removePhotoBtn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #eef2f7;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.removePhotoBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
