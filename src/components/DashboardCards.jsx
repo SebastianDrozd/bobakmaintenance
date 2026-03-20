@@ -6,7 +6,7 @@ const DashboardCards = () => {
       <div className={`${styles.card} ${styles.card1}`}>
         <div>
           <h3>Active Orders</h3>
-          <p className={styles.sub}>LoremLearn very basic of hot to run and operate</p>
+          <p className={styles.sub}>Quisque tristique libero vitae finibus sollicitudin.</p>
         </div>
         <div className={styles.square}>
             <ListOrdered/>
@@ -15,7 +15,7 @@ const DashboardCards = () => {
       <div className={`${styles.card} ${styles.card2}`}>
         <div>
           <h3>Past Due</h3>
-          <p className={styles.sub}>LoremLearn very basic of hot to run and operate</p>
+          <p className={styles.sub}>Quisque tristique libero vitae finibus sollicitudin.</p>
         </div>
          <div className={styles.square}>
             <User2Icon/>
@@ -23,8 +23,8 @@ const DashboardCards = () => {
       </div>
       <div className={`${styles.card} ${styles.card3}`}>
         <div>
-          <h3>Get Started</h3>
-          <p className={styles.sub}>LoremLearn very basic of hot to run and operate</p>
+          <h3>New This Week</h3>
+          <p className={styles.sub}>Quisque tristique libero vitae finibus sollicitudin.</p>
         </div>
         <div className={styles.square}>
             <File/>
@@ -32,8 +32,8 @@ const DashboardCards = () => {
       </div>
       <div className={`${styles.card} ${styles.card4}`}>
        <div >
-          <h3>Get Started</h3>
-          <p className={styles.sub}>LoremLearn very basic of hot to run and operate</p>
+          <h3>Sample</h3>
+          <p className={styles.sub}>Quisque tristique libero vitae finibus sollicitudin.</p>
         </div>
          <div className={styles.square}>
             <ComputerIcon/>

@@ -1,23 +1,107 @@
-.container{
+.container {
     height: 60px;
-    grid-column: 2 /3;
+    grid-column: 2 / 3;
     background-color: rgb(255, 255, 255);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2em;
-    border-bottom: 15px solid #000000;
+    padding: 0 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
-.newBtn{
+
+.left {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Create button (aligned with your style but improved slightly) */
+.newBtn {
     background-color: black;
     color: white;
-    padding:  5px 20px 5px 20px;
-    border-radius: 5px;
+    padding: 10px 18px 10   px 10px;
+    border-radius: 12px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 1rem;
-    font-weight: bold;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    
+    border: none;
+}
+
+/* Icon button (bell) */
+.iconBtn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: none;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.iconBtn:hover {
+    background: #f8fafc;
+}
+
+/* Notification dot */
+.notificationDot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 999px;
+}
+
+/* User section */
+.user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 8px;
+}
+
+/* Avatar */
+.userAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #f8fafc;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+}
+
+/* Name */
+.userName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* Responsive (important for iPad) */
+@media (max-width: 768px) {
+    .userName {
+        display: none;
+    }
 }

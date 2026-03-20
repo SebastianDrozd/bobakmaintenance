@@ -15,7 +15,13 @@ const getWorkOrderById = async (id) => {
     return response.data;
 }
 
+const getWorkOrders = async (id) => {
+    const response = await axios.get(BASE);
+    return response.data
+}
+
 module.exports = {
     saveWorkOrder,
-    getWorkOrderById
+    getWorkOrderById,
+    getWorkOrders
 }

@@ -1,55 +1,128 @@
-import { SortDesc, User, UserCheck2 } from "lucide-react";
+'use client'
+import { Search, SortDesc, User, UserCheck2, Wrench } from "lucide-react";
 import styles from "../styles/components/WorkOrdersTable.module.css";
-const data = [1, 2, 3, 4, 5, 6, 7, 8,9,10];
+import { useQuery } from "@tanstack/react-query";
+import { getWorkOrders } from "@/api/workorders";
+import { useRouter } from "next/navigation";
+
+
+const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 const WorkOrderTable = () => {
+  const router = useRouter()
+  const {data : workOrders,isLoading,isError} = useQuery({
+    queryKey : ['workorders'],
+    queryFn : getWorkOrders
+  })
+
+  console.log("this is data",workOrders)
+
+  if(isLoading)
+    return <p>loading.....</p>
   return (
     <div className={styles.container}>
-      <div className={styles.searchRow}>
-        <input placeholder="Search for items" className={styles.inputField} />
-        <div className={styles.btnRow}>
-          <button className={styles.btn}>
-            <User size={16} />
-            Mechanic
-          </button>
-          <button className={styles.btn}>
-            <SortDesc size={16} />
-            Last Modified
-          </button>
+      <div className={styles.controlsCard}>
+        <div className={styles.searchRow}>
+          <div className={styles.searchInputWrap}>
+            <Search size={16} />
+            <input
+              placeholder="Search work orders, assets, or requestors"
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.btnRow}>
+            <button className={styles.btn}>
+              <User size={16} />
+              Mechanic
+            </button>
+            <button className={styles.btn}>
+              <SortDesc size={16} />
+              Last Modified
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className={styles.tableWrapper}>
-        <table className={styles.woTable}>
-          <thead>
-            <tr className={styles.tableHeaders}>
-              <th>Priority</th>
-              <th>Type</th>
-              <th>Date</th>
-              <th>Requestor</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Assigned To</th>
-              <th>Asset</th>
-            </tr>
-          </thead>
+      <div className={styles.tableCard}>
+        <div className={styles.tableHeaderBar}>
+          <div>
+            <h3 className={styles.tableTitle}>Current Queue</h3>
+            <p className={styles.tableSubtitle}>
+              Showing all open and recently created work orders.
+            </p>
+          </div>
+        </div>
 
-          <tbody>
-            {data.map((data) => (
-              <tr key={data} className={styles.tableRow}>
-                <td className={styles.cell}>Urgent</td>
-                <td className={styles.cell}>Regular</td>
-                <td className={styles.cell}>Sunday July 1st 2025</td>
-                <td className={styles.cell}><User/>Sebastian</td>
-                <td className={styles.cell}>
-                  Fix leaking valve in blast chill cooler
-                </td>
-                <td className={styles.cell}>Open</td>
-                <td className={styles.cell}>Uperez</td>
-                <td className={styles.cell}>Blast Chill</td>
+        <div className={styles.tableWrapper}>
+          <table className={styles.woTable}>
+            <thead>
+              <tr className={styles.tableHeaders}>
+                <th>Priority</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Requestor</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Asset</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {workOrders.map((item,index) => (
+                <tr key={index} className={styles.tableRow} onClick={() => {router.push(`/dashboard/workorder/${item.Id}`)}}>
+                  <td className={styles.cell}>
+                    <span className={`${styles.badge} ${item.Priority =="Urgent" && styles.urgentBadge}  ${item.Priority =="High" && styles.highBadge} ${item.Priority =="Medium" && styles.mediumBadge} ${item.Priority =="Low" && styles.lowBadge}`}>
+                      {item.Priority}
+                    </span>
+                  </td>
+
+                  <td className={styles.cell}>
+                    <span className={styles.typePill}>
+                      <Wrench size={14} />
+                      {item.Type}
+                    </span>
+                  </td>
+
+                  <td className={styles.cell}>{ new Date(item.Date).toDateString()}</td>
+
+                  <td className={styles.cell}>
+                    <div className={styles.inlineUser}>
+                      <div className={styles.userIcon}>
+                        <User size={14} />
+                      </div>
+                      <span>{item.Requestor}</span>
+                    </div>
+                  </td>
+
+                  <td className={styles.cell}>
+                    <span className={styles.descriptionText}>
+                     {item.Description}
+                    </span>
+                  </td>
+
+                  <td className={styles.cell}>
+                    <span className={`${styles.badge} ${styles.openBadge}`}>
+                      {item.Status}
+                    </span>
+                  </td>
+
+                  <td className={styles.cell}>
+                    <div className={styles.inlineUser}>
+                      <div className={styles.userIcon}>
+                        <UserCheck2 size={14} />
+                      </div>
+                      <span>{item.FirstName} {item.LastName}</span>
+                    </div>
+                  </td>
+
+                  <td className={styles.cell}>{item.comp_desc.toLowerCase()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
