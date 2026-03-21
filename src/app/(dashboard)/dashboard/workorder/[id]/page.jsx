@@ -9,16 +9,23 @@ import {
   BadgeCheck,
   Camera,
   FileText,
+  CheckCircle2,
+  Clock3,
 } from "lucide-react";
 import styles from "../../../../../styles/WorkOrderDetailsPage.module.css";
-import { useQuery } from "@tanstack/react-query";
-import { getWorkOrderById } from "@/api/workorders";
-import { useParams } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { closeWorkOrder, getWorkOrderById } from "@/api/workorders";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import CloseWorkOrderModal from "@/ui/CloseWorkOrderModal";
+import { useState } from "react";
+
 const IMAGE_BASE = `http://localhost:5159/uploads/`;
 const WorkOrderDetailsPage = () => {
+  const queryClient = useQueryClient();
   const params = useParams();
-
+  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
   const {
     data: workOrder,
     isLoading,
@@ -28,9 +35,28 @@ const WorkOrderDetailsPage = () => {
     queryFn: () => getWorkOrderById(params.id),
     enabled: !!params.id,
   });
+  const handleClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleCloseSubmit = (data) => {
+    const woId = params.id;
+    closeMutation.mutate(data);
+  };
+  const closeMutation = useMutation({
+    mutationFn: (data) => closeWorkOrder(data, params.id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["workorder"]);
+      console.log("sucess data", data);
+      setModalOpen(false);
+    },
+    onError: (err) => {
+      console.log("error data", err);
+    },
+  });
   if (isLoading) return <p>Loading.....</p>;
   if (isError) return <p>There was an error loading this workorder</p>;
-  console.log(workOrder);
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -49,7 +75,13 @@ const WorkOrderDetailsPage = () => {
                 </p>
               </div>
 
-              <div className={styles.statusPill}>
+              <div
+                className={
+                  workOrder.workorder[0].Status == "Open"
+                    ? styles.statusPill
+                    : styles.completedStatusPill
+                }
+              >
                 {workOrder.workorder[0].Status}
               </div>
             </div>
@@ -187,8 +219,110 @@ const WorkOrderDetailsPage = () => {
                 ))}
               </div>
             </div>
+             
           </div>
+         {workOrder.workorder[0].Status == "Completed" && (
+            <div className={styles.completionSection}>
+              <div className={styles.completionHeader}>
+                <div>
+                 
+                  <h3 className={styles.completionTitle}>
+                    Closed Work Order Details
+                  </h3>
+                  <p className={styles.completionSubtitle}>
+                    Final notes, labor time, completion info, and closeout
+                    photo.
+                  </p>
+                </div>
+              </div>
 
+              <div className={styles.completionGrid}>
+                <div className={styles.infoItem}>
+                  <div className={styles.infoLabel}>
+                    <ClipboardList size={16} />
+                    Closed Description
+                  </div>
+                  <div className={styles.infoValue}>
+                    {workOrder.workorder[0].ClosedDescription ||
+                      "No closing description provided."}
+                  </div>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <div className={styles.infoLabel}>
+                    <Clock3 size={16} />
+                    Hours
+                  </div>
+                  <div className={styles.infoValue}>
+                    {workOrder.workorder[0].ClosedHours ?? "0"}
+                  </div>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <div className={styles.infoLabel}>
+                    <Clock3 size={16} />
+                    Minutes
+                  </div>
+                  <div className={styles.infoValue}>
+                    {workOrder.workorder[0].CLosedMinutes ?? "0"}
+                  </div>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <div className={styles.infoLabel}>
+                    <User size={16} />
+                    Closed By
+                  </div>
+                  <div className={styles.infoValue}>
+                    {workOrder.workorder[0].ClosedBy || "Unknown"}
+                  </div>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <div className={styles.infoLabel}>
+                    <CalendarDays size={16} />
+                    Closed Date
+                  </div>
+                  <div className={styles.infoValue}>
+                    {workOrder.workorder[0].ClosedDate ||
+                      "No close date available"}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.block}>
+                <div className={styles.blockLabel}>
+                  <Camera size={16} />
+                  Closed Photo
+                </div>
+
+                {workOrder.workorder[0]?.photo ? (
+                  <div className={styles.closedPhotoCard}>
+                    <div className={styles.closedPhotoWrap}>
+                      <Image
+                        unoptimized
+                        src={IMAGE_BASE + wo.ClosedPhotoPath}
+                        fill
+                        className={styles.closedPhoto}
+                        alt="Closed work order photo"
+                      />
+                    </div>
+
+                    <div className={styles.photoMeta}>
+                      <p className={styles.photoName}>Closeout Photo</p>
+                      <p className={styles.photoHint}>
+                        Uploaded when work order was completed
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.emptyStateCard}>
+                    No closeout photo was attached.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <div className={styles.footer}>
             <div className={styles.helperText}>
               This page is read-only and meant for quickly reviewing the full
@@ -196,16 +330,36 @@ const WorkOrderDetailsPage = () => {
             </div>
 
             <div className={styles.buttonRow}>
-              <button type="button" className={styles.secondaryBtn}>
+              <button
+                onClick={() => router.back()}
+                type="button"
+                className={styles.secondaryBtn}
+              >
                 Back
               </button>
-              <button type="button" className={styles.primaryBtn}>
-                Edit Work Order
-              </button>
+              {workOrder.workorder[0].Status == "Open" && (
+                <button type="button" className={styles.primaryBtn}>
+                  Edit Work Order
+                </button>
+              )}
+              {workOrder.workorder[0].Status == "Open" && (
+                <button
+                  onClick={() => setModalOpen(true)}
+                  type="button"
+                  className={styles.closeBtn}
+                >
+                  Close Work Order
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
+      <CloseWorkOrderModal
+        isOpen={modalOpen}
+        onClose={handleClose}
+        onSubmit={handleCloseSubmit}
+      />
     </div>
   );
 };

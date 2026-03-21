@@ -21,35 +21,14 @@ const WorkOrderTable = () => {
     return <p>loading.....</p>
   return (
     <div className={styles.container}>
-      <div className={styles.controlsCard}>
-        <div className={styles.searchRow}>
-          <div className={styles.searchInputWrap}>
-            <Search size={16} />
-            <input
-              placeholder="Search work orders, assets, or requestors"
-              className={styles.inputField}
-            />
-          </div>
-
-          <div className={styles.btnRow}>
-            <button className={styles.btn}>
-              <User size={16} />
-              Mechanic
-            </button>
-            <button className={styles.btn}>
-              <SortDesc size={16} />
-              Last Modified
-            </button>
-          </div>
-        </div>
-      </div>
+      
 
       <div className={styles.tableCard}>
         <div className={styles.tableHeaderBar}>
           <div>
             <h3 className={styles.tableTitle}>Current Queue</h3>
             <p className={styles.tableSubtitle}>
-              Showing all open and recently created work orders.
+              Showing all urgent and recently created work orders.
             </p>
           </div>
         </div>

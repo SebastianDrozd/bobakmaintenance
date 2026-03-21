@@ -15,16 +15,24 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getWorkOrders } from "@/api/workorders";
+import { getWorkOrders, getWorkOrdersQuery } from "@/api/workorders";
 import styles from "../../../../styles/WorkOrdersPage.module.css";
+import { useState } from "react";
 
 const WorkOrdersPage = () => {
   const router = useRouter();
 
   const { data: workOrders = [], isLoading, isError } = useQuery({
     queryKey: ["workorders"],
-    queryFn: getWorkOrders,
+    queryFn:  () => getWorkOrdersQuery(sortBy),
   });
+
+  const [searchTerm,setSearchTerm] = useState("");
+  const [sortBy,setSortBy] = useState("Date");
+  const [sortDirection,setSortDirection] = useState("Desc");
+
+
+ 
 
   if (isLoading) {
     return <div className={styles.stateMessage}>Loading work orders...</div>;
@@ -118,14 +126,7 @@ const WorkOrdersPage = () => {
             </div>
           </div>
 
-          <div className={styles.quickFilters}>
-            <button className={styles.filterPillActive}>All</button>
-            <button className={styles.filterPill}>Open</button>
-            <button className={styles.filterPill}>In Progress</button>
-            <button className={styles.filterPill}>Completed</button>
-            <button className={styles.filterPill}>Urgent</button>
-            <button className={styles.filterPill}>Unassigned</button>
-          </div>
+         
         </div>
 
         <div className={styles.tableCard}>
@@ -142,14 +143,14 @@ const WorkOrdersPage = () => {
             <table className={styles.woTable}>
               <thead>
                 <tr className={styles.tableHeaders}>
-                  <th>Priority</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Requestor</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Assigned To</th>
-                  <th>Asset</th>
+                  <th onClick={() => setSortBy("Priority")}>Priority</th>
+                  <th onClick={() => setSortBy("Type")}>Type</th>
+                  <th onClick={() => setSortBy("Date")}>Date</th>
+                  <th onClick={() => setSortBy("Requester")}>Requestor</th>
+                  <th onClick={() => setSortBy("Description")}>Description</th>
+                  <th onClick={() => setSortBy("Status")}>Status</th>
+                  <th onClick={() => setSortBy("Mechanic")}>Assigned To</th>
+                  <th onClick={() => setSortBy("Asset")}>Asset</th>
                 </tr>
               </thead>
 
