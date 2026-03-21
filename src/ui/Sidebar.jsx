@@ -1,3 +1,4 @@
+'use client'
 import {
   ChartAreaIcon,
   Factory,
@@ -7,8 +8,13 @@ import {
   Wrench,
 } from "lucide-react";
 import styles from "../styles/ui/Sidebar.module.css";
+import { usePathname, useRouter } from "next/navigation";
+
 
 const Sidebar = () => {
+  const router = useRouter();
+  const path = usePathname()
+  console.log("this is path",path)
   return (
     <aside className={styles.container}>
       <div className={styles.topSection}>
@@ -25,11 +31,14 @@ const Sidebar = () => {
         <p className={styles.sectionLabel}>Navigation</p>
 
         <ul className={styles.list}>
-          <li className={`${styles.listItem} ${styles.active}`}>
+          <li onClick={() => router.push("/dashboard")}  className={`${styles.listItem} ${path ==("/dashboard") && styles.active}`}>
             <House size={18} />
             <span>Home</span>
           </li>
-
+          <li onClick={() => router.push("/dashboard/workorders")}  className={`${styles.listItem} ${path.includes("workorders") && styles.active }`}>
+            <File size={18} />
+            <span>Work Orders</span>
+          </li>
           <li className={styles.listItem}>
             <ChartAreaIcon size={18} />
             <span>Preventative Maintenance</span>
@@ -40,10 +49,7 @@ const Sidebar = () => {
             <span>Assets</span>
           </li>
 
-          <li className={styles.listItem}>
-            <File size={18} />
-            <span>Statistics</span>
-          </li>
+          
 
           <li className={styles.listItem}>
             <ReceiptPoundSterling size={18} />

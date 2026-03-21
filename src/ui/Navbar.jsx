@@ -1,16 +1,21 @@
 'use client'
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, Plus, User } from "lucide-react";
 import styles from "../styles/ui/Navbar.module.css";
+import { useContext } from "react";
+import { AuthContext } from "@/util/AuthProvider";
 
 const Navbar = () => {
     const router = useRouter();
-
+    const path = usePathname();
+    const pathNames = path.split('/').filter( path => path )
+    const auth = useContext(AuthContext)
+    console.log("this is auth",auth)
     return (
         <div className={styles.container}>
             <div className={styles.left}>
-                <h4 className={styles.title}>Dashboard</h4>
+                <h4 className={styles.title}>{pathNames[pathNames.length -1]}</h4>
             </div>
 
             <div className={styles.right}>
@@ -25,7 +30,7 @@ const Navbar = () => {
                     <div className={styles.userAvatar}>
                         <User size={16} />
                     </div>
-                    <span className={styles.userName}>Sebastian</span>
+                    <span className={styles.userName}>{auth?.user?.username}</span>
                 </div>
                  <button
                     onClick={() => router.push("/dashboard/create")}
