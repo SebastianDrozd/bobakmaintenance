@@ -92,13 +92,40 @@
 .sectionHeader {
   padding: 28px 28px 18px;
   border-bottom: 1px solid #eef2f7;
+   display: flex;
+  justify-content: space-between; 
 }
+.headerRow{
 
+}
+.btnRow{
+  display: flex;
+  align-items: center;
+}
+.updateBtn{
+  background-color: black;
+  color: white;
+  padding: 1em;
+  margin-left: 1em;
+  border-radius: 10px;
+  cursor: pointer;
+}
 .sectionTitle {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
   color: #0f172a;
+}
+
+.icon{
+  color: #949494;
+}
+.editBtn{
+  border: 1px solid #eef2f7;
+  background-color: white;
+  padding: 1em;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .sectionText {
@@ -222,6 +249,8 @@
   margin: 4px 0 0;
   font-size: 12px;
   color: #64748b;
+  float: right;
+  margin-right: 1em;
 }
 
 .footer {
@@ -256,7 +285,7 @@
 }
 
 .closeBtn{
-  background-color: rgb(0, 102, 255);
+  background-color: rgb(0, 0, 0);
   color: white;
    border: none;
   border-radius: 10px;
@@ -335,6 +364,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  border-radius: 24px;
+  margin-bottom: 1em
 }
 
 .completionHeader {
@@ -429,4 +460,23 @@
   .completionGrid {
     grid-template-columns: 1fr;
   }
+}
+
+.inputField {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid #dbe2ea;
+  background: #F6FAFB;
+  font-size: 14px;
+  color: #0f172a;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.inputField:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }

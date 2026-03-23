@@ -12,10 +12,12 @@ import {
 import styles from "../../../../styles/CreateWorkOrderPage.module.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAssets } from "@/api/assets";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import getAllMechanics from "@/api/mechanics";
 import { saveWorkOrder } from "@/api/workorders";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { AuthContext } from "@/util/AuthProvider";
 const CreateWorkerOrderPage = () => {
   const [wantsAssets, setWantsAssets] = useState(false);
   const [wantsMechanics, setWantsMechanics] = useState(false);
@@ -31,25 +33,26 @@ const CreateWorkerOrderPage = () => {
 
   const { data: mechanics, isLoading: mechanicsLoading } = useQuery({
     queryKey: ["mecahnics"],
-    queryFn: () => getAllMechanics(),
-    enabled: !!wantsMechanics,
+    queryFn: () => getAllMechanics()
   });
-  console.log(mechanics);
+ 
   //formfields
-  const [asset, SetAsset] = useState(null);
-  const [mechanic, setMechanic] = useState(0);
+  const [asset, SetAsset] = useState("");
+  const [mechanic, setMechanic] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
   const [photos, setPhotos] = useState([]);
-  const requestor = "sdrozd";
+  const [hasError,setHasError] = useState(false);
+  const router = useRouter();
+  const auth = useContext(AuthContext);
   //handlers
   const handleChooseAsset = (e) => {
     SetAsset(e.target.value);
   };
 
   const handleChooseMechanic = (e) => {
-    console.log("This is mechanic", e.target.value);
+
     setMechanic(e.target.value);
   };
 
@@ -76,20 +79,25 @@ const CreateWorkerOrderPage = () => {
     console.log(photos);
   };
   const handleSubmit = () => {
-    const data = {
-      asset,
-      mechanic,
-      description,
-      priority,
-      dueDate,
-    };
+    console.log(description,priority,mechanic)
+    if(description == "" || priority == ""  ){
+    
+      setHasError(true);
+
+      setTimeout(() => {
+        setHasError(false)
+      },3000)
+
+
+      return;
+    }
     const formData = new FormData();
     formData.append("asset", asset);
-    formData.append("mechanic", mechanic);
+    formData.append("mechanic", Number(mechanic));
     formData.append("description", description);
     formData.append("priority", priority);
     formData.append("dueDate", dueDate);
-    formData.append("requestor", requestor);
+    formData.append("requestor", auth.user.username);
 
     photos.forEach((photo) => {
       formData.append("photos", photo);
@@ -104,7 +112,19 @@ const CreateWorkerOrderPage = () => {
   const saveMutation = useMutation({
     mutationFn: (data) => saveWorkOrder(data),
     onSuccess: (data) => {
+      setDescription("")
+      SetAsset("")
+      setMechanic(0)
+      setPhotos([])
+      setPriority("Low")
+      setDueDate("")
+      setWantsAssets(false)
        toast.success("Work Order Created successfully");
+         console.log(data)
+       setTimeout(() => {
+  
+        router.push(`/dashboard/workorder/${data}`)
+       },3000)
     },
     onError: (err) => {
      toast.error("There was an error saving this work order");
@@ -133,6 +153,8 @@ const CreateWorkerOrderPage = () => {
               Fill out the information below to create a new maintenance
               request.
             </p>
+            {hasError && 
+            <p className={styles.error}>Please fill in all required fields </p>}
           </div>
 
           <form className={styles.formGrid}>
@@ -145,10 +167,12 @@ const CreateWorkerOrderPage = () => {
                 onChange={handleChooseAsset}
                 onClick={() => setWantsAssets(true)}
                 className={styles.inputField}
+                value={asset}
               >
+                 <option value="">Select an asset</option>
                 {assets &&
                   assets.map((asset) => (
-                    <option value={asset.compid}>{asset.comp_desc}</option>
+                    <option key={asset.compid} value={asset.compid}>{asset.comp_desc}</option>
                   ))}
               </select>
             </div>
@@ -156,16 +180,18 @@ const CreateWorkerOrderPage = () => {
             <div className={styles.field}>
               <label className={styles.label}>
                 <User size={16} />
-                Assign To
+                Assign To <span className={styles.asterisk}>*</span>
               </label>
               <select
                 onChange={handleChooseMechanic}
                 onClick={() => setWantsMechanics(true)}
-                className={styles.inputField}
+                className={styles.inputField} 
+                value={mechanic}
               >
+                <option value="">Select a mechanic</option>
                 {mechanics &&
                   mechanics.map((mechanic) => (
-                    <option value={mechanic.id}>
+                    <option key={mechanic.id} value={mechanic.id}>
                       {mechanic.firstName + " " + mechanic.lastname}
                     </option>
                   ))}
@@ -175,7 +201,7 @@ const CreateWorkerOrderPage = () => {
             <div className={`${styles.field} ${styles.fullWidth}`}>
               <label className={styles.label}>
                 <ClipboardList size={16} />
-                Task Description
+                Task Description <span className={styles.asterisk}>*</span>
               </label>
               <textarea
                 onChange={handleDescriptionChange}
@@ -188,11 +214,12 @@ const CreateWorkerOrderPage = () => {
             <div className={styles.field}>
               <label className={styles.label}>
                 <AlertCircle size={16} />
-                Priority
+                Priority <span className={styles.asterisk}>*</span>
               </label>
               <select
                 onChange={handlePriorityChange}
                 className={styles.inputField}
+                defaultValue={priority}
               >
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>

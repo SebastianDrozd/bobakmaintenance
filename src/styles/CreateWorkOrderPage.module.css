@@ -395,3 +395,12 @@
   background: #f8fafc;
   color: #0f172a;
 }
+
+.asterisk{
+  color: red;
+  font-size: 18px;
+}
+.error{
+  margin-top: 1em;
+  color : red;
+}

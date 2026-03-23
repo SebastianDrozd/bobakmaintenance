@@ -8,6 +8,13 @@ const saveWorkOrder = async (wo) => {
     return response.data;
 }
 
+const updateWorkOrder = async (wo,id ) => {
+    const response = await axios.put(`${BASE}/${id}`,wo,{
+        withCredentials: true
+    })
+    return response.data
+}
+
 const closeWorkOrder = async (wo,id) => {
     console.log(wo,id)
     const response = await axios.put(`${BASE}/close/${id}`,wo,{
@@ -40,5 +47,6 @@ module.exports = {
     getWorkOrderById,
     getWorkOrders,
     closeWorkOrder,
-    getWorkOrdersQuery
+    getWorkOrdersQuery,
+    updateWorkOrder
 }
