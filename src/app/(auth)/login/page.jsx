@@ -4,14 +4,18 @@ import { AuthContext } from "@/util/AuthProvider";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import styles from "../../../styles/LoginPage.module.css";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinnerLogin from "@/components/LoadingSpinnerLogin";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isErr, setIsErr] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const router = useRouter();
+  const [isLoading,setIsloading] = useState(false);
 
   const handleLogin = () => {
+    setIsloading(true)
     const login = {
       username,
       password,
@@ -31,7 +35,11 @@ const LoginPage = () => {
           setIsErr(true);
           setErrMessage("Invalid Credentials");
         }
-      });
+      })
+      .finally(() => {
+        setIsloading(false)
+      })
+      ;
   };
 
   return (
@@ -59,7 +67,7 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button className={styles.loginBtn} onClick={handleLogin}>
-            Login
+            {isLoading ? <LoadingSpinnerLogin/> : "Login"}
           </button>
           <p className={styles.disclosure}>
             Trouble signing in? Contact{" "}

@@ -47,7 +47,7 @@ const CloseWorkOrderModal = ({
     formData.append("ClosedMinutes", minutes);
     formData.append("ClosedBy",auth.user.username);
     if (photo) {
-      formData.append("photo", photo);
+      formData.append("ClosedPhoto", photo);
     }
 
     if (onSubmit) {

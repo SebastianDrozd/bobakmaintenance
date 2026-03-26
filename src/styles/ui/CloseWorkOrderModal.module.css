@@ -99,7 +99,7 @@
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s ease, background 0.2s ease;
-  background: #f8fafc;
+  background: #ffffff;
   color: #0f172a;
 }
 
@@ -130,9 +130,9 @@
 
 .timeSection {
   padding: 18px;
-  border: 1px solid #eef2f7;
+  border: 1px solid #ffffff;
   border-radius: 18px;
-  background: #f8fafc;
+  background: #ffffff;
 }
 
 .sectionTitle {

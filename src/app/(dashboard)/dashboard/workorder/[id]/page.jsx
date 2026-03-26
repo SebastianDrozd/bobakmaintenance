@@ -14,6 +14,7 @@ import {
   PencilIcon,
   Edit,
   XIcon,
+  Printer,
 } from "lucide-react";
 import styles from "../../../../../styles/WorkOrderDetailsPage.module.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,6 +26,7 @@ import { useEffect, useState } from "react";
 import { getAssets } from "@/api/assets";
 import getAllMechanics from "@/api/mechanics";
 import toast, { Toaster } from "react-hot-toast";
+import { generateWorkOrderPdf } from "@/api/pdf";
 
 const IMAGE_BASE = `http://localhost:5159/uploads/`;
 const WorkOrderDetailsPage = () => {
@@ -47,7 +49,7 @@ const WorkOrderDetailsPage = () => {
   const { data: mechanics, isLoading: mechanicsLoading } = useQuery({ queryKey: ["mecahnics"], queryFn: () => getAllMechanics() });
   const { data: workOrder, isLoading, isError } = useQuery({ queryKey: ["workorder"], queryFn: () => getWorkOrderById(params.id), enabled: !!params.id });
 
-
+  console.log(workOrder)
   const handleClose = () => {
     setModalOpen(false);
   };
@@ -127,6 +129,12 @@ const WorkOrderDetailsPage = () => {
   if (isLoading) return <p>Loading.....</p>;
   if (isError) return <p>There was an error loading this workorder</p>;
 
+  const printPdf = async () => {
+    const res = await generateWorkOrderPdf(params.id)
+    const url = window.URL.createObjectURL(res.data);
+    window.open(url);
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -134,7 +142,7 @@ const WorkOrderDetailsPage = () => {
           <div className={styles.headerIcon}>
             <ClipboardList size={22} />
           </div>
-
+   
           <div className={styles.headerContent}>
             <div className={styles.headerTopRow}>
               <div>
@@ -224,6 +232,17 @@ const WorkOrderDetailsPage = () => {
                     "No close date available"}
                 </div>
               </div>
+              <div className={styles.infoItem}>
+                <div className={styles.infoLabel}>
+                  <CalendarDays size={16} />
+                  Total Days Open
+                </div>
+                {new Date().get}
+                <div className={styles.infoValue}>
+                  {new Date(workOrder.workorder[0].ClosedDate).getDay() - new Date(workOrder.workorder[0].Date).getDay()||
+                    "4 days"}
+                </div>
+              </div>
             </div>
 
             <div className={styles.block}>
@@ -232,12 +251,12 @@ const WorkOrderDetailsPage = () => {
                 Closed Photo
               </div>
 
-              {workOrder.workorder[0]?.photo ? (
+              {workOrder.closedPhoto[0]?.Path ? (
                 <div className={styles.closedPhotoCard}>
                   <div className={styles.closedPhotoWrap}>
                     <Image
                       unoptimized
-                      src={IMAGE_BASE + wo.ClosedPhotoPath}
+                      src={IMAGE_BASE + workOrder?.closedPhoto[0]?.Path}
                       fill
                       className={styles.closedPhoto}
                       alt="Closed work order photo"
@@ -268,7 +287,8 @@ const WorkOrderDetailsPage = () => {
               </p>
             </div>
             <div className={styles.btnRow}>
-              <button onClick={() => setWantsEdit(!wantsEdit)} className={styles.editBtn}><Edit className={styles.icon} /></button>
+              {workOrder.workorder[0].Status == "Open" &&  <button onClick={() => setWantsEdit(!wantsEdit)} className={styles.editBtn}><Edit className={styles.icon} /></button>}
+             
               {wantsEdit && <button onClick={handleUpdateBtn} className={styles.updateBtn}>Update</button>}
             </div>
 
@@ -468,6 +488,7 @@ const WorkOrderDetailsPage = () => {
                   Close Work Order
                 </button>
               )}
+               <button className={styles.secondaryBtn} onClick={printPdf}><Printer/></button>
             </div>
           </div>
         </div>

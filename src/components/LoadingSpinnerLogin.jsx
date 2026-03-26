@@ -1,8 +1,8 @@
 'use client'
 
-import styles from '../styles/components/LoadingSpinner.module.css'
+import styles from '../styles/components/LoadingSpinnerLogin.module.css'
 
-const LoadingSpinner = ({ text = "" }) => {
+const LoadingSpinnerLogin = ({ text = "" }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.spinner}></div>
@@ -11,4 +11,4 @@ const LoadingSpinner = ({ text = "" }) => {
   )
 }
 
-export default LoadingSpinner
+export default LoadingSpinnerLogin

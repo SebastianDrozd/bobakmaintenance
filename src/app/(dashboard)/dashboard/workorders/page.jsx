@@ -24,7 +24,7 @@ const WorkOrdersPage = () => {
 
   const { data: workOrders = [], isLoading, isError } = useQuery({
     queryKey: ["workorders"],
-    queryFn:  () => getWorkOrdersQuery(sortBy),
+    queryFn:  () => getWorkOrdersQuery(sortBy,sortDirection),
   });
 
   const [searchTerm,setSearchTerm] = useState("");
@@ -32,8 +32,12 @@ const WorkOrdersPage = () => {
   const [sortDirection,setSortDirection] = useState("Desc");
 
 
- 
-
+ const handleSort=(sortBy) => {
+  console.log("header clicked")
+  setSortBy(sortBy)
+  setSortDirection("ASC")
+ }
+console.log(workOrders)
   if (isLoading) {
     return <div className={styles.stateMessage}>Loading work orders...</div>;
   }
@@ -143,7 +147,7 @@ const WorkOrdersPage = () => {
             <table className={styles.woTable}>
               <thead>
                 <tr className={styles.tableHeaders}>
-                  <th onClick={() => setSortBy("Priority")}>Priority</th>
+                  <th onClick={() =>handleSort("Priority")}>Priority</th>
                   <th onClick={() => setSortBy("Type")}>Type</th>
                   <th onClick={() => setSortBy("Date")}>Date</th>
                   <th onClick={() => setSortBy("Requester")}>Requestor</th>
