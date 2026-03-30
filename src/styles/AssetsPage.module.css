@@ -23,7 +23,8 @@
   padding: 24px 28px;
 }
 
-.eyebrow {
+.eyebrow,
+.modalEyebrow {
   margin: 0 0 6px;
   font-size: 12px;
   font-weight: 700;
@@ -39,7 +40,8 @@
   color: #0f172a;
 }
 
-.subtitle {
+.subtitle,
+.modalSubtitle {
   margin: 8px 0 0;
   font-size: 14px;
   color: #64748b;
@@ -137,8 +139,7 @@
   flex-wrap: wrap;
 }
 
-.secondaryBtn,
-.iconBtn {
+.secondaryBtn {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   color: #334155;
@@ -153,14 +154,7 @@
   cursor: pointer;
 }
 
-.iconBtn {
-  width: 52px;
-  justify-content: center;
-  padding: 0;
-}
-
-.secondaryBtn:hover,
-.iconBtn:hover {
+.secondaryBtn:hover {
   background: #f8fafc;
 }
 
@@ -220,11 +214,11 @@
   overflow-x: auto;
 }
 
-.woTable {
+.assetsTable {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 1100px;
+  min-width: 1050px;
 }
 
 .tableHeaders th {
@@ -238,7 +232,6 @@
   background-color: #f8fafc;
   border-bottom: 1px solid #eef2f7;
   white-space: nowrap;
-  cursor: pointer;
 }
 
 .tableRow {
@@ -266,56 +259,30 @@
   white-space: nowrap;
 }
 
-.descriptionText {
-  display: inline-block;
-  max-width: 280px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #334155;
-}
-
-.badge {
+.assetNameWrap {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 7px 12px;
+  gap: 10px;
+}
+
+.assetIcon {
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  border: 1px solid transparent;
-  min-width: 70px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  flex-shrink: 0;
 }
 
-.urgentBadge {
-  background: #fff1f2;
-  color: #be123c;
-  border-color: #ffe4e6;
-}
-
-.highBadge {
-  background: #fffcf1;
-  color: #be8212;
-  border-color: #ffe4f4;
-}
-
-.mediumBadge {
-  background: #fffef1;
-  color: #bbbe12;
-  border-color: #e4e9b0;
-}
-
-.lowBadge {
-  background: #f1fff1;
-  color: #2a7706;
-  border-color: #c3ebc5;
-}
-
-.openBadge {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border-color: #dbeafe;
+.inlineMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #334155;
 }
 
 .typePill {
@@ -331,23 +298,35 @@
   color: #334155;
 }
 
-.inlineUser {
+.badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid transparent;
+  min-width: 95px;
 }
 
-.userIcon {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
+.activeBadge {
+  background: #f0fdf4;
+  color: #166534;
+  border-color: #d9f1df;
+}
+
+.maintenanceBadge {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #fed7aa;
+}
+
+.inactiveBadge {
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #475569;
-  flex-shrink: 0;
+  border-color: #e2e8f0;
 }
 
 .paginationBar {
@@ -368,7 +347,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .pageBtn,
@@ -403,10 +381,161 @@
   border-color: #000000;
 }
 
-.stateMessage {
-  padding: 40px;
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal {
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.closeBtn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
   color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.formGrid {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  overflow-y: auto;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label {
   font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.modalInput,
+.textarea {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 14px;
+  outline: none;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.modalInput:focus,
+.textarea:focus {
+  border-color: #000000;
+  background: #ffffff;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 130px;
+  padding: 16px;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px 24px;
+  border-top: 1px solid #eef2f7;
+}
+
+.footerText {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 12px;
+}
+
+.cancelBtn,
+.submitBtn {
+  border: none;
+  border-radius: 14px;
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.cancelBtn {
+  background: #eef2f7;
+  color: #334155;
+}
+
+.cancelBtn:hover {
+  background: #e2e8f0;
+}
+
+.submitBtn {
+  background: #000000;
+  color: #ffffff;
 }
 
 @media (max-width: 1100px) {
@@ -440,7 +569,9 @@
   }
 
   .tableHeaderBar,
-  .paginationBar {
+  .paginationBar,
+  .modalHeader,
+  .modalFooter {
     padding-left: 16px;
     padding-right: 16px;
   }
@@ -450,34 +581,24 @@
     padding: 14px 16px;
   }
 
-  .paginationBar {
+  .formGrid {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .paginationBar,
+  .modalFooter {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .paginationControls {
-    justify-content: flex-start;
+  .buttonRow {
+    width: 100%;
+    flex-direction: column-reverse;
   }
-}
 
-.selectWrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-.selectIcon {
-  position: absolute;
-  left: 12px;
-  pointer-events: none;
-}
-
-.statusBtn {
-  padding: 1rem 0.4rem 1rem 2.2rem;
-  border: 1px solid #dcdcdc;
-  border-radius: 10px;
-  background: white;
-   color: #334155;
-  font-size: 14px;
-  font-weight: 600;
+  .cancelBtn,
+  .submitBtn {
+    width: 100%;
+  }
 }

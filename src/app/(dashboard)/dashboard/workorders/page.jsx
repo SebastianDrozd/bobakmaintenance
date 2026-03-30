@@ -8,6 +8,7 @@ import {
   RefreshCw,
   Search,
   SlidersHorizontal,
+  SortAsc,
   SortDesc,
   User,
   UserCheck2,
@@ -21,26 +22,36 @@ import { useState } from "react";
 
 const WorkOrdersPage = () => {
   const router = useRouter();
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [localSearchTerm, setLocalSearchTerm] = useState(null)
+  const [sortBy, setSortBy] = useState("Date");
+  const [sortDirection, setSortDirection] = useState("DESC");
+  const [status, setStatus] = useState("")
+  const [priority, setPriority] = useState("")
+  const [currentPage,setCurrentPage] = useState(1)
   const { data: workOrders = [], isLoading, isError } = useQuery({
-    queryKey: ["workorders"],
-    queryFn:  () => getWorkOrdersQuery(sortBy,sortDirection),
-  });
+    queryKey: ["workorders", sortBy, sortDirection, searchTerm, status, priority],
+    queryFn: () => getWorkOrdersQuery(sortBy, sortDirection, searchTerm, status, priority),
 
-  const [searchTerm,setSearchTerm] = useState("");
-  const [sortBy,setSortBy] = useState("Date");
-  const [sortDirection,setSortDirection] = useState("Desc");
+  },
+  );
 
-
- const handleSort=(sortBy) => {
-  console.log("header clicked")
-  setSortBy(sortBy)
-  setSortDirection("ASC")
- }
-console.log(workOrders)
-  if (isLoading) {
-    return <div className={styles.stateMessage}>Loading work orders...</div>;
+  const handleSort = (sortBy) => {
+    console.log("header clicked")
+    console.log("current direction", sortDirection)
+    setSortBy(sortBy)
+    setSortDirection(sortDirection == "DESC" ? "ASC" : "DESC")
   }
+  const handleSearchTerm = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleReset = () => {
+    setSearchTerm("")
+    setStatus("")
+    setPriority("")
+  }
+
 
   if (isError) {
     return <div className={styles.stateMessage}>Unable to load work orders.</div>;
@@ -51,14 +62,14 @@ console.log(workOrders)
       <div className={styles.container}>
         <div className={styles.headerCard}>
           <div>
-            
+
             <h1 className={styles.title}>Work Orders</h1>
             <p className={styles.subtitle}>
               Search, review, and manage all maintenance work orders from one place.
             </p>
           </div>
 
-          
+
         </div>
 
         <div className={styles.statsGrid}>
@@ -100,6 +111,8 @@ console.log(workOrders)
               <input
                 placeholder="Search by description, requestor, asset, or status"
                 className={styles.inputField}
+                onChange={handleSearchTerm}
+                value={searchTerm}
               />
             </div>
 
@@ -108,32 +121,52 @@ console.log(workOrders)
                 <User size={16} />
                 Mechanic
               </button>
+              <div className={styles.selectWrap}>
+                <Filter size={16} className={styles.selectIcon} />
 
-              <button className={styles.secondaryBtn}>
-                <Filter size={16} />
-                Status
-              </button>
+                <select
+                  className={styles.statusBtn}
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Status
+                  </option>
+                  <option value="Open">Open</option>
+                  <option value="Completed">Complete</option>
+                </select>
+              </div>
+              <div className={styles.selectWrap}>
+                <SlidersHorizontal size={16} className={styles.selectIcon} />
 
-              <button className={styles.secondaryBtn}>
-                <SlidersHorizontal size={16} />
-                Priority
-              </button>
+                <select
+                  className={styles.statusBtn}
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Priority
+                  </option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Urgent">Urgent</option>
+                </select>
+              </div>
+
 
               <button className={styles.secondaryBtn}>
                 <SortDesc size={16} />
                 Last Modified
               </button>
 
-              <button className={styles.iconBtn}>
+              <button onClick={handleReset} className={styles.iconBtn}>
                 <RefreshCw size={16} />
               </button>
             </div>
           </div>
-
-         
         </div>
-
-        <div className={styles.tableCard}>
+        {isLoading ? "" : <div className={styles.tableCard}>
           <div className={styles.tableHeaderBar}>
             <div>
               <h3 className={styles.tableTitle}>All Work Orders</h3>
@@ -147,14 +180,14 @@ console.log(workOrders)
             <table className={styles.woTable}>
               <thead>
                 <tr className={styles.tableHeaders}>
-                  <th onClick={() =>handleSort("Priority")}>Priority</th>
-                  <th onClick={() => setSortBy("Type")}>Type</th>
-                  <th onClick={() => setSortBy("Date")}>Date</th>
-                  <th onClick={() => setSortBy("Requester")}>Requestor</th>
-                  <th onClick={() => setSortBy("Description")}>Description</th>
-                  <th onClick={() => setSortBy("Status")}>Status</th>
-                  <th onClick={() => setSortBy("Mechanic")}>Assigned To</th>
-                  <th onClick={() => setSortBy("Asset")}>Asset</th>
+                  <th onClick={() => handleSort("Priority")}>Priority </th>
+                  <th onClick={() => handleSort("Type")}>Type</th>
+                  <th onClick={() => handleSort("Date")}>Date</th>
+                  <th onClick={() => handleSort("Requester")}>Requestor</th>
+                  <th onClick={() => handleSort("Description")}>Description</th>
+                  <th onClick={() => handleSort("Status")}>Status</th>
+                  <th onClick={() => handleSort("Mechanic")}>Assigned To</th>
+                  <th onClick={() => handleSort("Asset")}>Asset</th>
                 </tr>
               </thead>
 
@@ -167,15 +200,14 @@ console.log(workOrders)
                   >
                     <td className={styles.cell}>
                       <span
-                        className={`${styles.badge} ${
-                          item.Priority === "Urgent"
-                            ? styles.urgentBadge
-                            : item.Priority === "High"
+                        className={`${styles.badge} ${item.Priority === "Urgent"
+                          ? styles.urgentBadge
+                          : item.Priority === "High"
                             ? styles.highBadge
                             : item.Priority === "Medium"
-                            ? styles.mediumBadge
-                            : styles.lowBadge
-                        }`}
+                              ? styles.mediumBadge
+                              : styles.lowBadge
+                          }`}
                       >
                         {item.Priority}
                       </span>
@@ -258,7 +290,8 @@ console.log(workOrders)
               </button>
             </div>
           </div>
-        </div>
+        </div>}
+
       </div>
     </div>
   );

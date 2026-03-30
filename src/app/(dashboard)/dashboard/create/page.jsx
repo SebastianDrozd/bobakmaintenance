@@ -98,6 +98,7 @@ const CreateWorkerOrderPage = () => {
     formData.append("priority", priority);
     formData.append("dueDate", dueDate);
     formData.append("requestor", auth.user.username);
+    formData.append("type","Regular")
 
     photos.forEach((photo) => {
       formData.append("photos", photo);

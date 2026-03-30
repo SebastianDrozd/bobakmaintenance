@@ -39,21 +39,21 @@ const Sidebar = () => {
             <File size={18} />
             <span>Work Orders</span>
           </li>
-          <li className={styles.listItem}>
+          <li onClick={() => router.push("/dashboard/preventativemaintenance")} className={styles.listItem}>
             <ChartAreaIcon size={18} />
             <span>Preventative Maintenance</span>
           </li>
 
-          <li className={styles.listItem}>
+          <li onClick={() => router.push("/dashboard/assets")} className={styles.listItem}>
             <Factory size={18} />
             <span>Assets</span>
           </li>
 
           
 
-          <li className={styles.listItem}>
+          <li onClick={() => router.push("/dashboard/admin")} className={styles.listItem}>
             <ReceiptPoundSterling size={18} />
-            <span>Reports</span>
+            <span>Admin</span>
           </li>
         </ul>
       </nav>

@@ -2,7 +2,7 @@
   grid-row: 1 / 4;
   min-height: 100vh;
   background: #ffffff;
-  border-right: 1px solid #eef2f7;
+  border-right: 1px solid  #d0d0d1;
   padding: 24px 18px;
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@
   align-items: center;
   gap: 12px;
   padding: 4px 6px 18px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid  #d0d0d1;
 }
 
 .logoBox {

@@ -35,10 +35,10 @@ const getWorkOrders = async (id) => {
     return response.data
 }
 
-const getWorkOrdersQuery = async (sortBy,sortDirection) => {
+const getWorkOrdersQuery = async (sortBy,sortDirection,searchTerm,status,priority) => {
     console.log("this is sortby",sortBy)
-    console.log(`${BASE}/query?sortBy=${sortBy}`)
-    const response = await axios.get(`${BASE}/query?sortBy=${sortBy}&sortDirection=${sortDirection}`)
+    console.log(`${BASE}/query?sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&priority=${priority}`)
+    const response = await axios.get(`${BASE}/query?sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&status=${status}&priority=${priority}`)
     return response.data;
 }
 

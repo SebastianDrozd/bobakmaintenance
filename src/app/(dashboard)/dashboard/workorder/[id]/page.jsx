@@ -77,7 +77,7 @@ const WorkOrderDetailsPage = () => {
       SetAsset(workOrder.workorder[0].Asset)
       setMechanic(workOrder.workorder[0].Mechanic)
       setPriority(workOrder.workorder[0].Priority)
-      setDueDate(workOrder.workorder[0].DueDate.slice(0, workOrder.workorder[0].DueDate.indexOf("T")))
+      setDueDate(workOrder.workorder[0].DueDate?.slice(0, workOrder.workorder[0].DueDate?.indexOf("T")))
     }
   }, [workOrder])
 
