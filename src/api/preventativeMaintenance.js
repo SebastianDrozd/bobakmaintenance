@@ -16,8 +16,36 @@ const getShortPmTemplates = async () => {
     return response.data;
 }
 
+const getPmTemplateById = async (id) => {
+    console.log(`${BASE}/${id}`)
+    const response = await axios.get(`${BASE}/${id}`,{
+        withCredentials : true
+    })
+    return response.data;
+}
+
+const updatePmTemplate = async (id, updateRequest) => {
+    const response = await axios.put(`${BASE}/${id}`, updateRequest, {
+        withCredentials : true
+    })
+    return response.data;
+}
+
+const deletePmTemplate = async (id) => {
+    const response = await  axios.delete(`${BASE}/${id}`, {
+        withCredentials : true
+    })
+    return response.data;
+}
+
+
+
+
 
 module.exports = {
     createNewPmTemplate,
-    getShortPmTemplates
+    getShortPmTemplates,
+    getPmTemplateById,
+    updatePmTemplate,
+    deletePmTemplate
 }

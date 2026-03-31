@@ -24,6 +24,8 @@ import getAllMechanics from "@/api/mechanics";
 import { getAssets } from "@/api/assets";
 import { AuthContext } from "@/util/AuthProvider";
 import { createNewPmTemplate, getShortPmTemplates } from "@/api/preventativeMaintenance";
+import { useRouter } from "next/navigation";
+
 
 const mockPmTasks = [
     {
@@ -75,7 +77,7 @@ const mockPmTasks = [
 const PreventativeMaintenancePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     
-
+    const router = useRouter();
     const {data: pmTemplates , isLoading,isError} = useQuery({
         queryKey : ["pmTemplates"],
         queryFn : () =>  getShortPmTemplates()
@@ -203,7 +205,7 @@ const PreventativeMaintenancePage = () => {
 
                             <tbody>
                                 {pmTemplates && pmTemplates.map((task) => (
-                                    <tr key={task.id} className={styles.tableRow}>
+                                    <tr onClick={() => router.push(`/dashboard/preventativemaintenance/${task.id}`)} key={task.id} className={styles.tableRow}>
                                         <td className={styles.cell}>
                                             <div className={styles.taskNameWrap}>
                                                 <div className={styles.taskIcon}>

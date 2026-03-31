@@ -13,6 +13,8 @@ import {
   X,
 } from "lucide-react";
 import styles from "../../../../styles/AssetsPage.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { getAssets, getFullAssets } from "@/api/assets";
 
 const mockAssets = [
   {
@@ -59,6 +61,10 @@ const mockAssets = [
 
 const AssetsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const {data : assets} = useQuery({queryKey : ['assets'],queryFn : () => getFullAssets()})
+
+  console.log(assets)
+ 
 
   return (
     <div className={styles.page}>

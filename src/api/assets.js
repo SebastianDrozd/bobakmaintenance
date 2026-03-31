@@ -8,7 +8,14 @@ const getAssets = async () => {
            });
            return response.data;
 }
+const getFullAssets = async () => {
+    const response = await axios.get(`${BASE}/full` , {
+               withCredentials : true,
+           });
+           return response.data;
+}
 
 module.exports = {
-    getAssets
+    getAssets,
+    getFullAssets
 }
