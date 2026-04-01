@@ -15,7 +15,15 @@ const getFullAssets = async () => {
            return response.data;
 }
 
+const getAssetsQuery= async ( page, pageSize,sortBy,sortDirection) => {
+    const response = await axios.get(`${BASE}/query?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`, {
+        withCredentials: true
+    });
+    return response.data;
+}
+
 module.exports = {
     getAssets,
-    getFullAssets
+    getFullAssets,
+    getAssetsQuery
 }

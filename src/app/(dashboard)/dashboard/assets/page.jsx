@@ -11,10 +11,11 @@ import {
   MapPin,
   ShieldCheck,
   X,
+  RefreshCwIcon,
 } from "lucide-react";
 import styles from "../../../../styles/AssetsPage.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { getAssets, getFullAssets } from "@/api/assets";
+import { getAssets, getAssetsQuery, getFullAssets } from "@/api/assets";
 
 const mockAssets = [
   {
@@ -61,10 +62,24 @@ const mockAssets = [
 
 const AssetsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {data : assets} = useQuery({queryKey : ['assets'],queryFn : () => getFullAssets()})
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('comp_desc');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [pageSize, setPageSize] = useState(25);
+  const { data: assets } = useQuery({
+    queryKey: ['assets', page, pageSize, sortBy, sortDirection],
+    queryFn: () => getAssetsQuery(page, pageSize, sortBy, sortDirection),
+  })
 
   console.log(assets)
- 
+
+
+  const handleSortByClick = (field) => {
+    setSortBy(field);
+    console.log("this is sort by " + field)
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  }
+
 
   return (
     <div className={styles.page}>
@@ -126,10 +141,7 @@ const AssetsPage = () => {
             </div>
 
             <div className={styles.actionsRow}>
-              <button className={styles.secondaryBtn}>
-                <Filter size={16} />
-                Department
-              </button>
+            
 
               <button className={styles.secondaryBtn}>
                 <SlidersHorizontal size={16} />
@@ -137,59 +149,63 @@ const AssetsPage = () => {
               </button>
 
               <button className={styles.secondaryBtn}>
-                <Wrench size={16} />
-                Type
+                <RefreshCwIcon size={16} />
+             
               </button>
             </div>
           </div>
 
-          <div className={styles.quickFilters}>
-            <button className={styles.filterPillActive}>All</button>
-            <button className={styles.filterPill}>Active</button>
-            <button className={styles.filterPill}>Maintenance</button>
-            <button className={styles.filterPill}>Inactive</button>
-            <button className={styles.filterPill}>Packaging</button>
-            <button className={styles.filterPill}>Processing</button>
-          </div>
         </div>
 
         <div className={styles.tableCard}>
           <div className={styles.tableHeaderBar}>
-            <div>
-              <h3 className={styles.tableTitle}>Asset Registry</h3>
-              <p className={styles.tableSubtitle}>
-                Master list of tracked maintenance assets.
-              </p>
+            <div className={styles.headerRow}>
+              <div>
+                <h3 className={styles.tableTitle}>Asset Registry</h3>
+                <p className={styles.tableSubtitle}>
+                  Master list of tracked maintenance assets.
+                </p>
+              </div>
+              <div>
+                <select value={pageSize} className={styles.select} onChange={(e) => setPageSize(Number(e.target.value))}>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
+
+
             </div>
+
           </div>
 
           <div className={styles.tableWrapper}>
             <table className={styles.assetsTable}>
               <thead>
                 <tr className={styles.tableHeaders}>
-                  <th>Asset</th>
-                  <th>Asset Code</th>
-                  <th>Department</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Last Service</th>
-                  <th>Owner</th>
+                  <th onClick={() => handleSortByClick("comp_desc")}>Asset</th>
+                  <th onClick={() => handleSortByClick("compid")}>Asset Code</th>
+                  <th onClick={() => handleSortByClick("department")}>Department</th>
+                  <th onClick={() => handleSortByClick("line_no")}>Line No</th>
+                  <th onClick={() => handleSortByClick("status")}>Status</th>
+                  <th onClick={() => handleSortByClick("manufacturer")}>Manufacturer</th>
+                  <th >Model No</th>
                 </tr>
               </thead>
 
               <tbody>
-                {mockAssets.map((asset) => (
+                {assets?.items?.map((asset) => (
                   <tr key={asset.id} className={styles.tableRow}>
                     <td className={styles.cell}>
                       <div className={styles.assetNameWrap}>
                         <div className={styles.assetIcon}>
                           <Factory size={15} />
                         </div>
-                        <span>{asset.name}</span>
+                        <span>{asset.comp_desc}</span>
                       </div>
                     </td>
 
-                    <td className={styles.cell}>{asset.assetCode}</td>
+                    <td className={styles.cell}>{asset.compid}</td>
 
                     <td className={styles.cell}>
                       <span className={styles.inlineMeta}>
@@ -199,29 +215,28 @@ const AssetsPage = () => {
                     </td>
 
                     <td className={styles.cell}>
-                      <span className={styles.typePill}>{asset.type}</span>
+                      <span className={styles.typePill}>{asset.line_no}</span>
                     </td>
 
                     <td className={styles.cell}>
                       <span
-                        className={`${styles.badge} ${
-                          asset.status === "Active"
-                            ? styles.activeBadge
-                            : asset.status === "Maintenance"
-                            ? styles.maintenanceBadge
-                            : styles.inactiveBadge
-                        }`}
+                        className={`${styles.badge} ${asset.status === "Active"
+                          ? styles.activeBadge
+                          : asset.status === "Inactive"
+                            ? styles.inactiveBadge
+                            : styles.maintenanceBadge
+                          }`}
                       >
                         {asset.status}
                       </span>
                     </td>
 
-                    <td className={styles.cell}>{asset.lastService}</td>
+                    <td className={styles.cell}>{asset.manufacturer}</td>
 
                     <td className={styles.cell}>
                       <span className={styles.inlineMeta}>
                         <ShieldCheck size={14} />
-                        {asset.owner}
+                        {asset.model_no}
                       </span>
                     </td>
                   </tr>
@@ -232,15 +247,13 @@ const AssetsPage = () => {
 
           <div className={styles.paginationBar}>
             <div className={styles.paginationInfo}>
-              Showing <strong>1–4</strong> of <strong>{mockAssets.length}</strong> assets
+              Showing <strong>{assets?.items?.length > 0 ? (page - 1) * pageSize + 1 : 0}–{Math.min(page * pageSize, assets?.totalCount)}</strong> of <strong>{assets?.totalCount}</strong> assets
             </div>
 
             <div className={styles.paginationControls}>
-              <button className={styles.pageBtn}>Previous</button>
-              <button className={`${styles.pageNumber} ${styles.pageNumberActive}`}>
-                1
-              </button>
-              <button className={styles.pageBtn}>Next</button>
+              {assets?.hasPreviousPage && <button onClick={() => setPage((prev) => prev - 1)} className={styles.pageBtn}>Previous</button>}
+
+              {assets?.hasNextPage && <button onClick={() => setPage((prev) => prev + 1)} className={styles.pageBtn}>Next</button>}
             </div>
           </div>
         </div>
