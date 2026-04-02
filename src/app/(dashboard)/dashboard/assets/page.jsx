@@ -19,6 +19,7 @@ import {
 import styles from "../../../../styles/AssetsPage.module.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createNewAsset, getAssets, getAssetsQuery, getFullAssets } from "@/api/assets";
+import { useRouter } from "next/navigation";
 
 const mockAssets = [
   {
@@ -71,6 +72,7 @@ const AssetsPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("");
+  const router = useRouter();
   const { data: assets } = useQuery({
     queryKey: [
       "assets",
@@ -207,7 +209,7 @@ const AssetsPage = () => {
 
               <tbody>
                 {assets?.items?.map((asset) => (
-                  <tr key={asset.id} className={`${styles.tableRow}`}>
+                  <tr key={asset.id} className={`${styles.tableRow}`} onClick={() => {router.push(`/dashboard/assets/${asset.compid}`)}}>
                     <td className={`${styles.cell} ${styles.fixedCol}`}>
                       <div className={styles.assetNameWrap}>
                         <div className={styles.assetIcon}>
