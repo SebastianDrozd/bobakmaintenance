@@ -15,15 +15,23 @@ const getFullAssets = async () => {
            return response.data;
 }
 
-const getAssetsQuery= async ( page, pageSize,sortBy,sortDirection) => {
-    const response = await axios.get(`${BASE}/query?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`, {
+const getAssetsQuery= async ( page, pageSize,sortBy,sortDirection,searchTerm,status) => {
+    const response = await axios.get(`${BASE}/query?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&status=${status}`, {
         withCredentials: true
     });
+    return response.data;
+}
+
+const createNewAsset = async (asset) => {
+    const response = await axios.post(`${BASE}`,asset,{
+        withCredentials: true
+    })
     return response.data;
 }
 
 module.exports = {
     getAssets,
     getFullAssets,
-    getAssetsQuery
+    getAssetsQuery,
+    createNewAsset
 }
