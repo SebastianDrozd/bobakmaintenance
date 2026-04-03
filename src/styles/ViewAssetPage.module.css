@@ -334,3 +334,49 @@
     width: 100%;
   }
 }
+
+.headerRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editBtn{
+  border: 1px solid #eef2f7;
+  background-color: white;
+  padding: 1em;
+  border-radius: 10px;
+  cursor: pointer;
+
+}
+.inputField {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid #dbe2ea;
+  background: #F6FAFB;
+  font-size: 14px;
+  color: #0f172a;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.inputField:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+.btnRow{
+  display: flex;
+  align-items: center;
+}
+.updateBtn{
+  background-color: black;
+  color: white;
+  padding: 0.9em;
+  margin-left: 1em;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 1em;
+}
