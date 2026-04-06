@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Factory,
   Plus,
@@ -21,49 +21,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createNewAsset, getAssets, getAssetsQuery, getFullAssets } from "@/api/assets";
 import { useRouter } from "next/navigation";
 
-const mockAssets = [
-  {
-    id: 1,
-    assetCode: "AST-1001",
-    name: "Blast Chill Cooler",
-    department: "Packaging",
-    type: "Cooling",
-    status: "Active",
-    lastService: "2026-03-10",
-    owner: "Uperez",
-  },
-  {
-    id: 2,
-    assetCode: "AST-1002",
-    name: "Mixer Line 2",
-    department: "Processing",
-    type: "Mixer",
-    status: "Active",
-    lastService: "2026-03-05",
-    owner: "Mjohnson",
-  },
-  {
-    id: 3,
-    assetCode: "AST-1003",
-    name: "Smokehouse Oven 1",
-    department: "Cooking",
-    type: "Oven",
-    status: "Maintenance",
-    lastService: "2026-02-28",
-    owner: "Rgarcia",
-  },
-  {
-    id: 4,
-    assetCode: "AST-1004",
-    name: "Vacuum Sealer",
-    department: "Packaging",
-    type: "Sealer",
-    status: "Inactive",
-    lastService: "2026-01-17",
-    owner: "None",
-  },
-];
-
 const AssetsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -72,6 +29,7 @@ const AssetsPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("");
+  const [pageButtons, setPageButtons] = useState([]);
   const router = useRouter();
   const { data: assets } = useQuery({
     queryKey: [
@@ -99,6 +57,20 @@ const AssetsPage = () => {
     setSearchTerm("");
     setStatus("");
   };
+
+
+ 
+  useEffect(() => {
+   if(assets?.totalPages) {
+    const buttons = [];
+    for(let i = page; i < page + 5 && i <= assets.totalPages; i++) {
+      buttons.push(i);
+    }
+    setPageButtons(buttons);
+   }
+  }, [assets]);
+  
+
 
   return (
     <div className={styles.page}>
@@ -272,7 +244,15 @@ const AssetsPage = () => {
                   Previous
                 </button>
               )}
-
+              {pageButtons.map((btnPage) => (
+                <button
+                  key={btnPage}
+                  onClick={() => setPage(btnPage)}
+                  className={`${styles.pageNumber} ${page === btnPage ? styles.pageNumberActive : ""}`}
+                >
+                  {btnPage}
+                </button>
+              ))}
               {assets?.hasNextPage && (
                 <button
                   onClick={() => setPage((prev) => prev + 1)}

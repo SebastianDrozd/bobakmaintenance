@@ -15,7 +15,7 @@ const Navbar = () => {
     return (
         <div className={styles.container}>
             <div className={styles.left}>
-                <h4 className={styles.title}>{pathNames[pathNames.length -1]}</h4>
+               
             </div>
 
             <div className={styles.right}>

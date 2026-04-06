@@ -201,9 +201,7 @@ const ViewAssetPage = () => {
       <div className={styles.container}>
         <div className={styles.headerCard}>
           <div className={styles.headerLeft}>
-            <div className={styles.headerIcon}>
-              <Factory size={22} />
-            </div>
+           
 
             <div>
               <p className={styles.eyebrow}>Assets</p>
@@ -621,27 +619,7 @@ const ViewAssetPage = () => {
             </div>
           </div>
 
-          <div className={styles.footer}>
-            <div className={styles.helperText}>
-              {wantsEdit
-                ? "You can update details, remove existing photos, and add new ones before saving."
-                : "This page provides a read-only view of the asset and its service details."}
-            </div>
-
-            <div className={styles.buttonRow}>
-              <button type="button" className={styles.secondaryBtn}>
-                Back
-              </button>
-
-              <button
-                type="button"
-                className={styles.primaryBtn}
-                onClick={handleToggleEdit}
-              >
-                {wantsEdit ? "Cancel Edit" : "Edit Asset"}
-              </button>
-            </div>
-          </div>
+          
         </div>
       </div>
         <Toaster position="bottom-right" />
