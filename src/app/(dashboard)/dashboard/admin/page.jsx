@@ -12,6 +12,8 @@ import {
   X,
 } from "lucide-react";
 import styles from "../../../../styles/AdminPage.module.css";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createMechanic, getAllMechanicsFull } from "@/api/mechanics";
 
 const mockMechanics = [
   {
@@ -50,15 +52,27 @@ const mockMechanics = [
 
 const AdminPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [editing,setEditing] = useState(false)
+   const [editableRowIndex,setEditableRowIndex] = useState(null);
+  const {data : mechanics,isLoading,isError} = useQuery({
+    queryKey : ["mechanics"],
+    queryFn : getAllMechanicsFull
+  })
+  console.log("mechanics",mechanics)
+  if(isLoading){
+    return "loading..."
+  }
 
+  const wantsEditRow =(index) => {
+    setEditableRowIndex(index);
+    setEditing(true)
+  }
   return (
     <div className={styles.page}>
       <div className={styles.container}>
         <div className={styles.headerCard}>
           <div className={styles.headerLeft}>
-            <div className={styles.headerIcon}>
-              <Settings size={22} />
-            </div>
+            
 
             <div>
               <p className={styles.eyebrow}>Administration</p>
@@ -79,33 +93,7 @@ const AdminPage = () => {
           </button>
         </div>
 
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Total Mechanics</p>
-            <h3 className={styles.statValue}>{mockMechanics.length}</h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Active</p>
-            <h3 className={styles.statValue}>
-              {mockMechanics.filter((x) => x.status === "Active").length}
-            </h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Inactive</p>
-            <h3 className={styles.statValue}>
-              {mockMechanics.filter((x) => x.status === "Inactive").length}
-            </h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Supervisors</p>
-            <h3 className={styles.statValue}>
-              {mockMechanics.filter((x) => x.role === "Supervisor").length}
-            </h3>
-          </div>
-        </div>
+   
 
         <div className={styles.sectionCard}>
           <div className={styles.sectionHeader}>
@@ -117,73 +105,62 @@ const AdminPage = () => {
             </div>
           </div>
 
-          <div className={styles.controlsRow}>
-            <div className={styles.searchInputWrap}>
-              <Search size={16} />
-              <input
-                className={styles.inputField}
-                placeholder="Search by name, username, or role"
-              />
-            </div>
-
-            <button
-              className={styles.secondaryBtn}
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Plus size={16} />
-              New Mechanic
-            </button>
-          </div>
+          
 
           <div className={styles.tableWrapper}>
             <table className={styles.adminTable}>
               <thead>
                 <tr className={styles.tableHeaders}>
-                  <th>Name</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Department</th>
+                  <th>Shift</th>
+                  <th>Notes</th>
+                  <th></th>
                 </tr>
               </thead>
 
               <tbody>
-                {mockMechanics.map((mechanic) => (
-                  <tr key={mechanic.id} className={styles.tableRow}>
+                {mechanics.map((mechanic,index) => (
+                  <tr key={mechanic.Id} className={styles.tableRow}>
                     <td className={styles.cell}>
                       <div className={styles.userCell}>
-                        <div className={styles.userAvatar}>
-                          <User size={15} />
-                        </div>
-                        <span>
-                          {mechanic.firstName} {mechanic.lastName}
-                        </span>
+                        {editableRowIndex == index && editing ? <input className={styles.inputField} placeholder="hello"/> : <span>
+                          {mechanic.firstName} 
+                        </span>}
+                        
                       </div>
                     </td>
-
-                    <td className={styles.cell}>{mechanic.username}</td>
+                    <td className={styles.cell}>
+                    {editableRowIndex == index && editing ? <input className={styles.inputField}/> : mechanic.lastName }
+                    </td>
+                  
+                   
+                    
 
                     <td className={styles.cell}>
-                      <span className={styles.rolePill}>
+                      {editableRowIndex == index && editing ?  <input className={styles.inputField}/> : <span className={styles.rolePill}>
                         <Wrench size={14} />
-                        {mechanic.role}
-                      </span>
+                        {mechanic.department}
+                      </span>}
+                      
                     </td>
 
                     <td className={styles.cell}>
-                      <span
+                      {editableRowIndex == index && editing ? <select><option>First</option></select> : <span
                         className={`${styles.badge} ${
                           mechanic.status === "Active"
                             ? styles.activeBadge
                             : styles.inactiveBadge
                         }`}
                       >
-                        {mechanic.status}
-                      </span>
+                        {mechanic.shift}
+                      </span> }
+                     
                     </td>
-
+                   <td className={styles.cell}>{editableRowIndex == index && editing ? <input className={styles.inputField}/> : mechanic.notes}</td>
                     <td className={styles.cell}>
-                      <button className={styles.iconActionBtn}>
+                      <button className={styles.iconActionBtn} onClick={() => wantsEditRow(index)}>
                         <Pencil size={15} />
                       </button>
                     </td>
@@ -211,6 +188,40 @@ const AdminPage = () => {
 };
 
 const CreateMechanicModal = ({ onClose }) => {
+  const [firstName,setFirstName] = useState("")
+  const [lastName,setLastName] = useState("");
+  const [shift,setShift] = useState("");
+  const [department,setDepartment] = useState("");
+  const [notes,setNotes] = useState("")
+
+  const queryClient = useQueryClient();
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const data = {
+      FirstName : firstName,
+      LastName : lastName,
+     
+      Shift : shift,
+      Department : department,
+      Notes : notes
+    }
+    console.log(data)
+    saveMutation.mutate(data)
+  }
+
+  const saveMutation = useMutation({
+    mutationFn : (data) => createMechanic(data),
+    onSuccess : (data) => {
+      console.log(data)
+      queryClient.invalidateQueries(["mechanics"])
+      onClose()
+    },
+    onError : (err) => {
+      onClose()
+      console.log(err)
+    }
+  })
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -232,39 +243,35 @@ const CreateMechanicModal = ({ onClose }) => {
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label}>First Name</label>
-              <input className={styles.modalInput} placeholder="Mike" />
+              <input onChange={(e) => setFirstName(e.target.value)} className={styles.modalInput} placeholder="Mike" />
             </div>
 
             <div className={styles.formGroup}>
               <label className={styles.label}>Last Name</label>
-              <input className={styles.modalInput} placeholder="Johnson" />
+              <input onChange={(e) => setLastName(e.target.value)} className={styles.modalInput} placeholder="Johnson" />
+            </div>
+
+            
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Department</label>
+              <input onChange={(e) => setDepartment(e.target.value)} className={styles.modalInput} placeholder="packging" />
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Username</label>
-              <input className={styles.modalInput} placeholder="mjohnson" />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Role</label>
-              <select className={styles.modalInput}>
+              <label className={styles.label}>Shift</label>
+              <select value={shift} onChange={(e)=>setShift(e.target.value)} className={styles.modalInput}>
                 <option value="">Select role</option>
-                <option>Mechanic</option>
-                <option>Supervisor</option>
+                <option value="1st">1st</option>
+                <option value="2nd">2nd</option>
               </select>
             </div>
 
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Status</label>
-              <select className={styles.modalInput}>
-                <option>Active</option>
-                <option>Inactive</option>
-              </select>
-            </div>
+          
 
             <div className={`${styles.formGroup} ${styles.fullWidth}`}>
               <label className={styles.label}>Notes</label>
               <textarea
+                onChange={e => setNotes(e.target.value)}
                 className={styles.textarea}
                 placeholder="Optional notes about the mechanic, role, or assignment responsibilities"
               />
@@ -280,7 +287,7 @@ const CreateMechanicModal = ({ onClose }) => {
               <button type="button" className={styles.cancelBtn} onClick={onClose}>
                 Cancel
               </button>
-              <button type="submit" className={styles.submitBtn}>
+              <button onClick={handleSubmit} type="submit" className={styles.submitBtn}>
                 Save Mechanic
               </button>
             </div>

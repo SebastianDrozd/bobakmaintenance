@@ -88,10 +88,7 @@ const PreventativeMaintenancePage = () => {
             <div className={styles.container}>
                 <div className={styles.headerCard}>
                     <div className={styles.headerLeft}>
-                        <div className={styles.headerIcon}>
-                            <ShieldCheck size={22} />
-                        </div>
-
+                        
                         <div>
                             <p className={styles.eyebrow}>Maintenance</p>
                             <h1 className={styles.title}>Preventative Maintenance</h1>

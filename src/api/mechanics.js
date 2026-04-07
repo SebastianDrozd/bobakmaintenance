@@ -8,5 +8,23 @@ const getAllMechanics = async () => {
     return response.data;
 }
 
+const createMechanic = async (data) => {
+    const response = await axios.post(BASE,data,{
+        withCredentials : true
+    })
+    return response.data
+}
 
-export default getAllMechanics;
+const getAllMechanicsFull = async () => {
+    const response = await axios.get(`${BASE}/full`,{
+        withCredentials : true
+    })
+    return response.data
+}
+
+
+module.exports = {
+    getAllMechanics,
+    createMechanic,
+    getAllMechanicsFull
+}

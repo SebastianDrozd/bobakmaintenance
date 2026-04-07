@@ -2,7 +2,7 @@
   grid-column: 2 / 3;
   min-height: 100vh;
   padding: 32px;
-
+background: #f8fafc;
 }
 
 .container {
@@ -18,7 +18,7 @@
   background: rgba(255, 255, 255, 0.85);
  
   border-radius: 24px;
-  border: 1px solid #eef2f7;
+  border: 1px solid #e1e6eb;
   backdrop-filter: blur(10px);
   margin-bottom: 24px;
 }
@@ -63,7 +63,7 @@
   background: #ffffff;
  
   border-radius: 24px;
- border: 1px solid #eef2f7;
+  border: 1px solid #e1e6eb;
   overflow: hidden;
 }
 
@@ -116,7 +116,7 @@
   min-height: 52px;
   padding: 0 16px;
   border-radius: 14px;
-  border: 1px solid #dbe2ea;
+   border: 1px solid #e1e6eb;
   background: #F6FAFB;
   font-size: 14px;
   color: #0f172a;

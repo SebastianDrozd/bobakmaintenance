@@ -1,6 +1,7 @@
 .container{
     display: flex;
     margin-top: 4em;
+    background: white;
 }
 .card{
     width: 450px;

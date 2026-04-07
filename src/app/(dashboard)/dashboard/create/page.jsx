@@ -13,11 +13,12 @@ import styles from "../../../../styles/CreateWorkOrderPage.module.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAssets } from "@/api/assets";
 import { useContext, useState } from "react";
-import getAllMechanics from "@/api/mechanics";
+
 import { saveWorkOrder } from "@/api/workorders";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/util/AuthProvider";
+import { getAllMechanics } from "@/api/mechanics";
 const CreateWorkerOrderPage = () => {
   const [wantsAssets, setWantsAssets] = useState(false);
   const [wantsMechanics, setWantsMechanics] = useState(false);
@@ -36,6 +37,7 @@ const CreateWorkerOrderPage = () => {
     queryFn: () => getAllMechanics()
   });
  
+  console.log(mechanics)
   //formfields
   const [asset, SetAsset] = useState("");
   const [mechanic, setMechanic] = useState("");
