@@ -35,10 +35,17 @@ const getWorkOrders = async (id) => {
     return response.data
 }
 
-const getWorkOrdersQuery = async (sortBy,sortDirection,searchTerm,status,priority) => {
+const getWorkOrdersQuery = async (page,pageSize,sortBy,sortDirection,searchTerm,status,priority,type) => {
     console.log("this is sortby",sortBy)
-    console.log(`${BASE}/query?sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&priority=${priority}`)
-    const response = await axios.get(`${BASE}/query?sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&status=${status}&priority=${priority}`)
+    console.log(`${BASE}/query?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&status=${status}&priority=${priority}&type=${type}`)
+    const response = await axios.get(`${BASE}/query?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}&searchTerm=${searchTerm}&status=${status}&priority=${priority}&type=${type}`)
+    return response.data;
+}
+
+const getDashboardStats = async () => {
+    const response = await axios.get(`${BASE}/stats`,{
+        withCredentials : true
+    })
     return response.data;
 }
 
@@ -48,5 +55,6 @@ module.exports = {
     getWorkOrders,
     closeWorkOrder,
     getWorkOrdersQuery,
-    updateWorkOrder
+    updateWorkOrder,
+    getDashboardStats
 }

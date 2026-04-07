@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getWorkOrders, getWorkOrdersQuery } from "@/api/workorders";
 import styles from "../../../../styles/WorkOrdersPage.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const WorkOrdersPage = () => {
   const router = useRouter();
@@ -28,14 +28,17 @@ const WorkOrdersPage = () => {
   const [sortDirection, setSortDirection] = useState("DESC");
   const [status, setStatus] = useState("")
   const [priority, setPriority] = useState("")
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [type, setType] = useState("")
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [pageButtons, setPageButtons] = useState([])
   const { data: workOrders = [], isLoading, isError } = useQuery({
-    queryKey: ["workorders", sortBy, sortDirection, searchTerm, status, priority],
-    queryFn: () => getWorkOrdersQuery(sortBy, sortDirection, searchTerm, status, priority),
-
+    queryKey: ["workorders", sortBy, sortDirection, searchTerm, status, priority, type, page, pageSize],
+    queryFn: () => getWorkOrdersQuery(page, pageSize, sortBy, sortDirection, searchTerm, status, priority, type),
   },
   );
-
+  console.log(workOrders)
   const handleSort = (sortBy) => {
     console.log("header clicked")
     console.log("current direction", sortDirection)
@@ -50,9 +53,18 @@ const WorkOrdersPage = () => {
     setSearchTerm("")
     setStatus("")
     setPriority("")
+    setType("")
   }
-
-
+  useEffect(() => {
+    if(workOrders?.totalPages) {
+    const buttons = [];
+    for(let i = page; i < page + 3 && i <= workOrders.totalPages; i++) {
+      buttons.push(i);
+    }
+    setPageButtons(buttons);
+   }
+  }, [workOrders])
+ 
   if (isError) {
     return <div className={styles.stateMessage}>Unable to load work orders.</div>;
   }
@@ -61,49 +73,20 @@ const WorkOrdersPage = () => {
     <div className={styles.page}>
       <div className={styles.container}>
         <div className={styles.headerCard}>
-          <div>
+          <div className={styles.headerRow}>
+            <div>
+              <h1 className={styles.title}>Work Orders</h1>
+              <p className={styles.subtitle}>
+                Search, review, and manage all maintenance work orders from one place.
+              </p>
+            </div>
 
-            <h1 className={styles.title}>Work Orders</h1>
-            <p className={styles.subtitle}>
-              Search, review, and manage all maintenance work orders from one place.
-            </p>
-          </div>
-
-
-        </div>
-
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Total Orders</p>
-            <h3 className={styles.statValue}>{workOrders.length}</h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Open</p>
-            <h3 className={styles.statValue}>
-              {workOrders.filter((x) => x.Status === "Open").length}
-            </h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Urgent</p>
-            <h3 className={styles.statValue}>
-              {workOrders.filter((x) => x.Priority === "Urgent").length}
-            </h3>
-          </div>
-
-          <div className={styles.statCard}>
-            <p className={styles.statLabel}>Assigned</p>
-            <h3 className={styles.statValue}>
-              {
-                workOrders.filter(
-                  (x) => x.FirstName || x.LastName
-                ).length
-              }
-            </h3>
+            <button onClick={() => router.push("/dashboard/create")} className={styles.newBtn}>
+              <Plus size={16} />
+              Create New
+            </button>
           </div>
         </div>
-
         <div className={styles.controlsCard}>
           <div className={styles.controlsTopRow}>
             <div className={styles.searchInputWrap}>
@@ -117,10 +100,21 @@ const WorkOrdersPage = () => {
             </div>
 
             <div className={styles.actionsRow}>
-              <button className={styles.secondaryBtn}>
-                <User size={16} />
-                Mechanic
-              </button>
+              <div className={styles.selectWrap}>
+
+                <SortDesc size={16} className={styles.selectIcon} />
+                <select
+                  className={styles.statusBtn}
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Type
+                  </option>
+                  <option value="Regular">Regular</option>
+                  <option value="PM">Pm</option>
+                </select>
+              </div>
               <div className={styles.selectWrap}>
                 <Filter size={16} className={styles.selectIcon} />
 
@@ -155,10 +149,6 @@ const WorkOrdersPage = () => {
               </div>
 
 
-              <button className={styles.secondaryBtn}>
-                <SortDesc size={16} />
-                Last Modified
-              </button>
 
               <button onClick={handleReset} className={styles.iconBtn}>
                 <RefreshCw size={16} />
@@ -174,6 +164,16 @@ const WorkOrdersPage = () => {
                 Full maintenance queue with filters, sorting, and pagination.
               </p>
             </div>
+            <select
+              value={pageSize}
+              className={styles.select}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
           </div>
 
           <div className={styles.tableWrapper}>
@@ -192,7 +192,7 @@ const WorkOrdersPage = () => {
               </thead>
 
               <tbody>
-                {workOrders.map((item, index) => (
+                {workOrders.items.map((item, index) => (
                   <tr
                     key={index}
                     className={styles.tableRow}
@@ -267,27 +267,39 @@ const WorkOrdersPage = () => {
 
           <div className={styles.paginationBar}>
             <div className={styles.paginationInfo}>
-              Showing <strong>1–20</strong> of <strong>{workOrders.length}</strong> work
-              orders
+              Showing{" "}
+              <strong>
+                {workOrders?.items?.length > 0 ? (page - 1) * pageSize + 1 : 0}–
+                {Math.min(page * pageSize, workOrders?.totalCount)}
+              </strong>{" "}
+              of <strong>{workOrders?.totalCount}</strong> work orders
             </div>
 
             <div className={styles.paginationControls}>
-              <button className={styles.pageBtn}>
-                <ChevronLeft size={16} />
-                Previous
-              </button>
+              {workOrders?.hasPreviousPage &&
+                <button className={styles.pageBtn} onClick={() => setPage(page - 1)}>
+                  <ChevronLeft size={16} />
+                  Previous
+                </button>}
 
-              <button className={`${styles.pageNumber} ${styles.pageNumberActive}`}>
-                1
-              </button>
-              <button className={styles.pageNumber}>2</button>
-              <button className={styles.pageNumber}>3</button>
-              <button className={styles.pageNumber}>4</button>
 
-              <button className={styles.pageBtn}>
-                Next
-                <ChevronRight size={16} />
-              </button>
+               {pageButtons.map((btnPage) => (
+                <button
+                  key={btnPage}
+                  onClick={() => setPage(btnPage)}
+                  className={`${styles.pageNumber} ${page === btnPage ? styles.pageNumberActive : ""}`}
+                >
+                  {btnPage}
+                </button>
+              ))}
+
+              {workOrders?.hasNextPage &&
+                <button className={styles.pageBtn} onClick={() => setPage(page + 1)}>
+                  Next
+                  <ChevronRight size={16} />
+                </button>
+              }
+
             </div>
           </div>
         </div>}

@@ -20,11 +20,11 @@ import {
 } from "lucide-react";
 import styles from "../../../../styles/PreventativeMaintenancePage.module.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import getAllMechanics from "@/api/mechanics";
 import { getAssets } from "@/api/assets";
 import { AuthContext } from "@/util/AuthProvider";
 import { createNewPmTemplate, getShortPmTemplates } from "@/api/preventativeMaintenance";
 import { useRouter } from "next/navigation";
+import { getAllMechanics } from "@/api/mechanics";
 
 
 const mockPmTasks = [
@@ -255,12 +255,20 @@ const PreventativeMaintenancePage = () => {
                                                         ? styles.scheduledBadge
                                                         : task.status === "Due Soon"
                                                             ? styles.dueSoonBadge
-                                                            : task.status === "Due Today"
+                                                            : task.lastRun === "0001-01-01T00:00:00"
                                                                 ? styles.dueTodayBadge
                                                                 : styles.overdueBadge
                                                     }`}
                                             >
-                                                {task.status}
+                                                {task.lastRun === "0001-01-01T00:00:00"
+                                                    ? "Never Started"
+                                                    : task.lastRun === task.nextRunDate
+                                                        ? "Due Today"
+                                                        : task.status
+                                                            ? task.lastRun > task.nextRunDate
+                                                                ? "Overdue"
+                                                                : task.status
+                                                            : "Scheduled"}
                                             </span>
                                         </td>
                                     </tr>

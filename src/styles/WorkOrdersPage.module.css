@@ -12,11 +12,27 @@
   flex-direction: column;
   gap: 20px;
 }
-
-.headerCard {
+/* Create button (aligned with your style but improved slightly) */
+.newBtn {
+    background-color: black;
+    color: white;
+    padding: 10px 18px 10px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+.headerRow{
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  justify-content: space-between ;
+  align-items: center;
+}
+.headerCard {
+ 
   gap: 16px;
   background: #ffffff;
    border: 1px solid #e1e6eb;
@@ -197,10 +213,23 @@
   overflow: hidden;
   margin-bottom: 2em;
 }
-
+.select{
+  
+  height: 30px;
+  padding: 0 16px;
+  border-radius: 5px;
+  border: 1px solid #dbe2ea;
+ 
+  font-size: 14px;
+  color: #0f172a;
+  transition: all 0.2s ease;
+  outline: none;
+}
 .tableHeaderBar {
   padding: 22px 24px 16px;
   border-bottom: 1px solid #eef2f7;
+  display: flex;
+  justify-content: space-between;
 }
 
 .tableTitle {

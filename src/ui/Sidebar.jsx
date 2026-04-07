@@ -22,7 +22,7 @@ const Sidebar = () => {
           <Wrench size={18} />
         </div>
         <div>
-          <p className={styles.eyebrow}>Operations</p>
+          <p className={styles.eyebrow}>Bobak</p>
           <h2 className={styles.title}>Maintenance</h2>
         </div>
       </div>

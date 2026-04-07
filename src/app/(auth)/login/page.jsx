@@ -51,7 +51,7 @@ const LoginPage = () => {
       className={styles.container}
     >
       <div className={styles.card}>
-        <h1 className={styles.title}>Maintenance</h1>
+        <h1 className={styles.title}>Bobak Maintenance</h1>
         <div className={styles.formContents}>
           <input
             className={styles.inputField}

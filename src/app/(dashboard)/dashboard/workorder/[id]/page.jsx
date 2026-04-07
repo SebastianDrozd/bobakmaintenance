@@ -104,6 +104,10 @@ const WorkOrderDetailsPage = () => {
     setDescription(e.target.value);
   };
 
+  const handleViewPmTemplate = () => {
+    router.push(`/dashboard/preventativemaintenance/${workOrder.workorder[0].PmTemplateId}`)
+  }
+
   const handleUpdateBtn = () => {
     const formData = new FormData();
     formData.append("Description", description);
@@ -139,9 +143,7 @@ const WorkOrderDetailsPage = () => {
     <div className={styles.page}>
       <div className={styles.container}>
         <div className={styles.headerCard}>
-          <div className={styles.headerIcon}>
-            <ClipboardList size={22} />
-          </div>
+         
    
           <div className={styles.headerContent}>
             <div className={styles.headerTopRow}>
@@ -298,10 +300,10 @@ const WorkOrderDetailsPage = () => {
             <div className={styles.infoItem}>
               <div className={styles.infoLabel}>
                 <FileText size={16} />
-                Work Order ID
+                Type
               </div>
               <div className={styles.infoValue}>
-                {workOrder.workorder[0].Id}
+                {workOrder.workorder[0].Type == "Regular" ? "Regular Maintenance" : workOrder.workorder[0].Type == "PM" ? "Preventative Maintenance" : workOrder.workorder[0].Type}
               </div>
             </div>
 
@@ -332,7 +334,7 @@ const WorkOrderDetailsPage = () => {
                     <option key={asset.compid} value={asset.compid}>{asset.comp_desc}</option>
                   ))}
               </select> : <div className={styles.infoValue}>
-                {workOrder.workorder[0].asset}
+                {workOrder.workorder[0].comp_desc}
               </div>}
             </div>
 
@@ -416,6 +418,17 @@ const WorkOrderDetailsPage = () => {
                 {new Date(workOrder.workorder[0].Date).toDateString()}
               </div>
             </div>
+            {workOrder.workorder[0].Type == "PM" && <div className={styles.infoItem}>
+              <div className={styles.infoLabel}>
+                <CalendarDays size={16} />
+                Pm Template Link
+              </div>
+              <div className={styles.infoValue}>
+               <button className={styles.primaryBtn} onClick={handleViewPmTemplate}>
+                 View
+               </button>
+              </div>
+            </div>}
           </div>
 
           <div className={styles.divider} />

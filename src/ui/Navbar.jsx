@@ -32,13 +32,7 @@ const Navbar = () => {
                     </div>
                     <span className={styles.userName}>{auth?.user?.username}</span>
                 </div>
-                 <button
-                    onClick={() => router.push("/dashboard/create")}
-                    className={styles.newBtn}
-                >
-                    <Plus size={16} />
-                    Create New
-                </button>
+              
             </div>
         </div>
     );
