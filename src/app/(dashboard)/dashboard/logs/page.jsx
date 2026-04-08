@@ -143,37 +143,7 @@ const LogsPage = () => {
                     </div>
                 </div>
 
-                <div className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Total Events</p>
-                        <h3 className={styles.statValue}>{mockEvents.length}</h3>
-                    </div>
-
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Work Order Events</p>
-                        <h3 className={styles.statValue}>
-                            {mockEvents.filter((x) => x.type === "Work Order").length}
-                        </h3>
-                    </div>
-
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>PM Events</p>
-                        <h3 className={styles.statValue}>
-                            {
-                                mockEvents.filter(
-                                    (x) => x.type === "Preventative Maintenance"
-                                ).length
-                            }
-                        </h3>
-                    </div>
-
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Asset / Admin Events</p>
-                        <h3 className={styles.statValue}>
-                            {mockEvents.filter((x) => x.type === "Asset" || x.type === "Admin").length}
-                        </h3>
-                    </div>
-                </div>
+               
 
                 <div className={styles.controlsCard}>
                     <div className={styles.controlsTopRow}>
