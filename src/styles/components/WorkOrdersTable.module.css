@@ -3,13 +3,16 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  
+  min-width: 0;
 }
 
 .headerBlock {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -33,14 +36,15 @@
   font-size: 14px;
   color: #64748b;
   line-height: 1.6;
+  max-width: 700px;
 }
 
 .controlsCard {
   background: #ffffff;
-  border: 1px solid #eef2f7;
+  border: 1px solid #e1e6eb;
   border-radius: 20px;
   padding: 18px;
-   border: 1px solid #e1e6eb;
+  min-width: 0;
 }
 
 .searchRow {
@@ -48,10 +52,12 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .searchInputWrap {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -69,6 +75,7 @@
 
 .inputField {
   width: 100%;
+  min-width: 0;
   border: none;
   background: transparent;
   font-size: 14px;
@@ -83,6 +90,8 @@
 .btnRow {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .btn {
@@ -96,9 +105,11 @@
   color: #334155;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -108,10 +119,11 @@
 
 .tableCard {
   background: #ffffff;
-   border: 1px solid #e1e6eb;
+  border: 1px solid #e1e6eb;
   border-radius: 20px;
   overflow: hidden;
-    margin-bottom: 2em;
+  margin-bottom: 2em;
+  min-width: 0;
 }
 
 .tableHeaderBar {
@@ -134,16 +146,18 @@
 
 .tableWrapper {
   width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   margin-bottom: 2em;
 }
 
 .woTable {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 1000px;
-  
 }
 
 .tableHeaders th {
@@ -211,16 +225,19 @@
   color: #be123c;
   border-color: #ffe4e6;
 }
+
 .highBadge {
   background: #fffcf1;
   color: #be8212;
   border-color: #ffe4f4;
 }
+
 .mediumBadge {
   background: #fffef1;
   color: #bbbe12;
   border-color: #e4e9b0;
 }
+
 .lowBadge {
   background: #f1fff1;
   color: #2a7706;
@@ -277,8 +294,7 @@
   }
 
   .btn {
-    flex: 1;
-    justify-content: center;
+    flex: 1 1 180px;
   }
 }
 

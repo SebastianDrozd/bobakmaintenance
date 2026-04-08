@@ -1,5 +1,5 @@
 const {default : axios} = require('axios');
-const BASE = "http://localhost:5159/api/WorkOrders";
+const BASE = "http://sebastian.bobak.local:5159/api/WorkOrders";
 
 const saveWorkOrder = async (wo) => {
     const response =await  axios.post(BASE,wo,{

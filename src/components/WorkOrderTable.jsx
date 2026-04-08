@@ -96,7 +96,7 @@ const WorkOrderTable = () => {
                     </div>
                   </td>
 
-                  <td className={styles.cell}>{item.comp_desc.toLowerCase()}</td>
+                  <td className={styles.cell}>{item.comp_desc?.toLowerCase()}</td>
                 </tr>
               ))}
             </tbody>

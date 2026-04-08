@@ -1,5 +1,5 @@
 const {default : axios} = require('axios');
-const BASE = "http://localhost:5159/api/PreventativeMaintenance/templates";
+const BASE = "http://sebastian.bobak.local:5159/api/PreventativeMaintenance/templates";
 
 
 const createNewPmTemplate = async (pmTask) => {
@@ -38,8 +38,12 @@ const deletePmTemplate = async (id) => {
     return response.data;
 }
 
-
-
+const getShortPmTemplatesQuery = async (page, pageSize, searchTerm,frequency) => {
+    const response = await axios.get(`${BASE}/short/query?page=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}&frequency=${frequency}`, {
+        withCredentials : true
+    })
+    return response.data;
+}
 
 
 module.exports = {
@@ -47,5 +51,6 @@ module.exports = {
     getShortPmTemplates,
     getPmTemplateById,
     updatePmTemplate,
-    deletePmTemplate
+    deletePmTemplate,
+    getShortPmTemplatesQuery
 }

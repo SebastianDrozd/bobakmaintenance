@@ -17,12 +17,14 @@ import {
     ListOrdered,
     GripVertical,
     Trash2,
+    SortDesc,
+    RefreshCw,
 } from "lucide-react";
 import styles from "../../../../styles/PreventativeMaintenancePage.module.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAssets } from "@/api/assets";
 import { AuthContext } from "@/util/AuthProvider";
-import { createNewPmTemplate, getShortPmTemplates } from "@/api/preventativeMaintenance";
+import { createNewPmTemplate, getShortPmTemplates, getShortPmTemplatesQuery } from "@/api/preventativeMaintenance";
 import { useRouter } from "next/navigation";
 import { getAllMechanics } from "@/api/mechanics";
 
@@ -76,19 +78,28 @@ const mockPmTasks = [
 
 const PreventativeMaintenancePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+    const [frequency, setFrequency] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [page, SetPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const router = useRouter();
-    const {data: pmTemplates , isLoading,isError} = useQuery({
-        queryKey : ["pmTemplates"],
-        queryFn : () =>  getShortPmTemplates()
+    const { data: pmTemplates, isLoading, isError } = useQuery({
+        queryKey: ["pmTemplates", page, pageSize, searchTerm, frequency],
+        queryFn: () => getShortPmTemplatesQuery(page, pageSize, searchTerm, frequency)
     })
+
+    const handleReset = () => {
+        setSearchTerm("");
+        setFrequency("");
+    }
     console.log("These are pmtemplates", pmTemplates)
+
     return (
         <div className={styles.page}>
             <div className={styles.container}>
                 <div className={styles.headerCard}>
                     <div className={styles.headerLeft}>
-                        
+
                         <div>
                             <p className={styles.eyebrow}>Maintenance</p>
                             <h1 className={styles.title}>Preventative Maintenance</h1>
@@ -108,71 +119,46 @@ const PreventativeMaintenancePage = () => {
                     </button>
                 </div>
 
-                <div className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Total PM Tasks</p>
-                        <h3 className={styles.statValue}>{mockPmTasks.length}</h3>
-                    </div>
 
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Due Today</p>
-                        <h3 className={styles.statValue}>
-                            {mockPmTasks.filter((x) => x.status === "Due Today").length}
-                        </h3>
-                    </div>
-
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Due Soon</p>
-                        <h3 className={styles.statValue}>
-                            {mockPmTasks.filter((x) => x.status === "Due Soon").length}
-                        </h3>
-                    </div>
-
-                    <div className={styles.statCard}>
-                        <p className={styles.statLabel}>Overdue</p>
-                        <h3 className={styles.statValue}>
-                            {mockPmTasks.filter((x) => x.status === "Overdue").length}
-                        </h3>
-                    </div>
-                </div>
 
                 <div className={styles.controlsCard}>
                     <div className={styles.controlsTopRow}>
                         <div className={styles.searchInputWrap}>
                             <Search size={16} />
                             <input
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 className={styles.inputField}
                                 placeholder="Search by task name, asset, area, or mechanic"
                             />
                         </div>
 
                         <div className={styles.actionsRow}>
-                            <button className={styles.secondaryBtn}>
-                                <Filter size={16} />
-                                Area
-                            </button>
+                            <div className={styles.selectWrap}>
 
-                            <button className={styles.secondaryBtn}>
-                                <SlidersHorizontal size={16} />
-                                Frequency
-                            </button>
-
-                            <button className={styles.secondaryBtn}>
-                                <User size={16} />
-                                Mechanic
+                                <SlidersHorizontal size={16} className={styles.selectIcon} />
+                                <select
+                                    className={styles.statusBtn}
+                                    value={frequency}
+                                    onChange={(e) => setFrequency(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Frequency
+                                    </option>
+                                    <option value="Daily">Daily</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Bi-Weekly">Bi-Weekly</option>
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="Quarterly">Quarterly</option>
+                                </select>
+                            </div>
+                            <button onClick={handleReset} className={styles.iconBtn}>
+                                <RefreshCw size={16} />
                             </button>
                         </div>
                     </div>
 
-                    <div className={styles.quickFilters}>
-                        <button className={styles.filterPillActive}>All</button>
-                        <button className={styles.filterPill}>Due Today</button>
-                        <button className={styles.filterPill}>Due Soon</button>
-                        <button className={styles.filterPill}>Overdue</button>
-                        <button className={styles.filterPill}>Scheduled</button>
-                        <button className={styles.filterPill}>Weekly</button>
-                        <button className={styles.filterPill}>Monthly</button>
-                    </div>
+
                 </div>
 
                 <div className={styles.tableCard}>
@@ -184,6 +170,16 @@ const PreventativeMaintenancePage = () => {
                                 dates.
                             </p>
                         </div>
+                        <select
+                            value={pageSize}
+                            className={styles.select}
+                            onChange={(e) => setPageSize(Number(e.target.value))}
+                        >
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
                     </div>
 
                     <div className={styles.tableWrapper}>
@@ -201,7 +197,8 @@ const PreventativeMaintenancePage = () => {
                             </thead>
 
                             <tbody>
-                                {pmTemplates && pmTemplates.map((task) => (
+                                {isLoading && <div>Loading...</div>}
+                                {pmTemplates && pmTemplates.items.map((task) => (
                                     <tr onClick={() => router.push(`/dashboard/preventativemaintenance/${task.id}`)} key={task.id} className={styles.tableRow}>
                                         <td className={styles.cell}>
                                             <div className={styles.taskNameWrap}>
@@ -219,7 +216,7 @@ const PreventativeMaintenancePage = () => {
                                             </span>
                                         </td>
 
-                                      
+
 
                                         <td className={styles.cell}>
                                             <span className={styles.frequencyPill}>
@@ -238,26 +235,26 @@ const PreventativeMaintenancePage = () => {
                                         <td className={styles.cell}>
                                             <span className={styles.inlineMeta}>
                                                 <CheckCircle2 size={14} />
-                                                {task.lastRun.split("T")[0]}
+                                                {task.lastRun?.split("T")[0]}
                                             </span>
                                         </td>
 
                                         <td className={styles.cell}>
                                             <span className={styles.inlineMeta}>
                                                 <CalendarDays size={14} />
-                                                {task.nextRunDate.split("T")[0]}
+                                                {task.nextRunDate?.split("T")[0]}
                                             </span>
                                         </td>
 
                                         <td className={styles.cell}>
                                             <span
                                                 className={`${styles.badge} ${task.status === "Scheduled"
-                                                        ? styles.scheduledBadge
-                                                        : task.status === "Due Soon"
-                                                            ? styles.dueSoonBadge
-                                                            : task.lastRun === "0001-01-01T00:00:00"
-                                                                ? styles.dueTodayBadge
-                                                                : styles.overdueBadge
+                                                    ? styles.scheduledBadge
+                                                    : task.status === "Due Soon"
+                                                        ? styles.dueSoonBadge
+                                                        : task.lastRun === "0001-01-01T00:00:00"
+                                                            ? styles.dueTodayBadge
+                                                            : styles.overdueBadge
                                                     }`}
                                             >
                                                 {task.lastRun === "0001-01-01T00:00:00"
@@ -279,16 +276,21 @@ const PreventativeMaintenancePage = () => {
 
                     <div className={styles.paginationBar}>
                         <div className={styles.paginationInfo}>
-                            Showing <strong>1–4</strong> of <strong>{mockPmTasks.length}</strong> PM
-                            tasks
+                            Showing{" "}
+                            <strong>
+                                {pmTemplates?.items?.length > 0 ? (page - 1) * pageSize + 1 : 0}–
+                                {Math.min(page * pageSize, pmTemplates?.totalCount)}
+                            </strong>{" "}
                         </div>
 
                         <div className={styles.paginationControls}>
-                            <button className={styles.pageBtn}>Previous</button>
+                            {pmTemplates?.hasNextPage && <button className={styles.pageBtn}>Previous</button> }
+                           
                             <button className={`${styles.pageNumber} ${styles.pageNumberActive}`}>
                                 1
                             </button>
-                            <button className={styles.pageBtn}>Next</button>
+                                
+                            {pmTemplates?.hasNextPage && <button className={styles.pageBtn}>Next</button>}
                         </div>
                     </div>
                 </div>
@@ -306,69 +308,69 @@ const CreatePmTaskModal = ({ onClose }) => {
         "Lubricate moving parts",
         "Verify safety guards are secure",
     ];
-     const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState([])
     const [taskDescription, setTaskDescription] = useState("")
-     const [description, setDescription] = useState("")
-     const [asset,setAsset] = useState("")
-     const [mechanic,setMechanic] = useState("")
-     const [priority,setPriority] = useState("")
-     const [frequency,setFrequency] = useState("")
-     const [dueDate,setDueDate] = useState("")
-     const auth = useContext(AuthContext);
-     const queryClient = useQueryClient();
-    
-     const handleAddTask = () => {
-         tasks.push(taskDescription)
+    const [description, setDescription] = useState("")
+    const [asset, setAsset] = useState("")
+    const [mechanic, setMechanic] = useState("")
+    const [priority, setPriority] = useState("")
+    const [frequency, setFrequency] = useState("")
+    const [dueDate, setDueDate] = useState("")
+    const auth = useContext(AuthContext);
+    const queryClient = useQueryClient();
+
+    const handleAddTask = () => {
+        tasks.push(taskDescription)
         setTasks([...tasks])
         setTaskDescription("")
-     }
+    }
 
-     const handleDeleteTask = (index) => {
+    const handleDeleteTask = (index) => {
         const newTasks = [...tasks]
         newTasks.splice(index, 1)
         setTasks(newTasks)
-     }
+    }
 
-     const {data : mechanics} = useQuery({
+    const { data: mechanics } = useQuery({
         queryKey: ["mecahnics"],
-        queryFn :() => getAllMechanics()
+        queryFn: () => getAllMechanics()
 
-     })
+    })
 
-     const {data : assets} = useQuery({
+    const { data: assets } = useQuery({
         queryKey: ["assets"],
-        queryFn :() => getAssets()
-        })
- 
+        queryFn: () => getAssets()
+    })
 
-     const handleSavePm = (e) => {
+
+    const handleSavePm = (e) => {
         e.preventDefault()
         const newPmTask = {
-            Asset : asset,
-            Priority : priority,
-            Mechanic : Number(mechanic),
-            Frequency : frequency,
-            NextRunDate : dueDate,
-            Description : description,
-            Tasks : tasks,
-            CreatedBy : auth.user.username
+            Asset: asset,
+            Priority: priority,
+            Mechanic: Number(mechanic),
+            Frequency: frequency,
+            NextRunDate: dueDate,
+            Description: description,
+            Tasks: tasks,
+            CreatedBy: auth.user.username
         }
-            console.log("new PM task", newPmTask)
-            saveMutation.mutate(newPmTask)
-     }
+        console.log("new PM task", newPmTask)
+        saveMutation.mutate(newPmTask)
+    }
 
-     const saveMutation = useMutation({
+    const saveMutation = useMutation({
 
-        mutationFn : (newPmTask) => createNewPmTemplate(newPmTask),
-        onSuccess : (data) => {
+        mutationFn: (newPmTask) => createNewPmTemplate(newPmTask),
+        onSuccess: (data) => {
             console.log("PM task created successfully", data)
             queryClient.invalidateQueries(["pmTemplates"])
             onClose()
-        },  
-        onError : (error) => {
+        },
+        onError: (error) => {
             console.error("Error creating PM task", error)
         }
-     })
+    })
     return (
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -388,7 +390,7 @@ const CreatePmTaskModal = ({ onClose }) => {
 
                 <form className={styles.modalForm}>
                     <div className={styles.formGrid}>
-                      
+
 
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Asset</label>
@@ -406,7 +408,7 @@ const CreatePmTaskModal = ({ onClose }) => {
                             <label className={styles.label}>Priority</label>
                             <select onChange={(e) => setPriority(e.target.value)} className={styles.modalInput}>
                                 <option value="">Select priority</option>
-                                  <option value="Urgent">Urgent</option>
+                                <option value="Urgent">Urgent</option>
                                 <option value="High">High</option>
                                 <option value="Medium">Medium</option>
                                 <option value="Low">Low</option>
@@ -445,7 +447,7 @@ const CreatePmTaskModal = ({ onClose }) => {
                         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                             <label className={styles.label}>Task Description</label>
                             <textarea
-                            onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) => setDescription(e.target.value)}
                                 className={styles.textarea}
                                 placeholder="Add instructions for the preventative maintenance task, inspection steps, and any notes for the mechanic"
                             />

@@ -42,7 +42,7 @@ const CreateWorkerOrderPage = () => {
   const [asset, SetAsset] = useState("");
   const [mechanic, setMechanic] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("Low");
+  const [priority, setPriority] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [photos, setPhotos] = useState([]);
   const [hasError,setHasError] = useState(false);
@@ -82,7 +82,7 @@ const CreateWorkerOrderPage = () => {
   };
   const handleSubmit = () => {
     console.log(description,priority,mechanic)
-    if(description == "" || priority == ""  ){
+    if(description == "" || priority == "" || mechanic == "" ){
     
       setHasError(true);
 
@@ -117,9 +117,9 @@ const CreateWorkerOrderPage = () => {
     onSuccess: (data) => {
       setDescription("")
       SetAsset("")
-      setMechanic(0)
+      setMechanic("")
       setPhotos([])
-      setPriority("Low")
+      setPriority("")
       setDueDate("")
       setWantsAssets(false)
        toast.success("Work Order Created successfully");
@@ -224,6 +224,7 @@ const CreateWorkerOrderPage = () => {
                 className={styles.inputField}
                 defaultValue={priority}
               >
+                <option value="">Select a priority</option>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>

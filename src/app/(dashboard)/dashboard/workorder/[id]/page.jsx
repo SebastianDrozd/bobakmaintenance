@@ -24,7 +24,7 @@ import Image from "next/image";
 import CloseWorkOrderModal from "@/ui/CloseWorkOrderModal";
 import { useEffect, useState } from "react";
 import { getAssets } from "@/api/assets";
-import getAllMechanics from "@/api/mechanics";
+import { getAllMechanics } from "@/api/mechanics";
 import toast, { Toaster } from "react-hot-toast";
 import { generateWorkOrderPdf } from "@/api/pdf";
 
@@ -73,11 +73,11 @@ const WorkOrderDetailsPage = () => {
 
   useEffect(() => {
     if (workOrder) {
-      setDescription(workOrder.workorder[0].Description)
-      SetAsset(workOrder.workorder[0].Asset)
-      setMechanic(workOrder.workorder[0].Mechanic)
-      setPriority(workOrder.workorder[0].Priority)
-      setDueDate(workOrder.workorder[0].DueDate?.slice(0, workOrder.workorder[0].DueDate?.indexOf("T")))
+      setDescription(workOrder?.workorder[0]?.Description)
+      SetAsset(workOrder?.workorder[0]?.Asset)
+      setMechanic(workOrder?.workorder[0]?.Mechanic)
+      setPriority(workOrder?.workorder[0]?.Priority)
+      setDueDate(workOrder?.workorder[0]?.DueDate?.slice(0, workOrder?.workorder[0]?.DueDate?.indexOf("T")))
     }
   }, [workOrder])
 
@@ -122,6 +122,7 @@ const WorkOrderDetailsPage = () => {
   const updateMutation = useMutation({
     mutationFn: (data) => updateWorkOrder(data, params.id),
     onSuccess: (data) => {
+      queryClient.invalidateQueries(["workorder"]);
       toast.success("Work order updated sucessfully")
       setWantsEdit(false)
     },
@@ -157,17 +158,17 @@ const WorkOrderDetailsPage = () => {
 
               <div
                 className={
-                  workOrder.workorder[0].Status == "Open"
+                  workOrder?.workorder[0]?.Status == "Open"
                     ? styles.statusPill
                     : styles.completedStatusPill
                 }
               >
-                {workOrder.workorder[0].Status}
+                {workOrder?.workorder[0]?.Status}
               </div>
             </div>
           </div>
         </div>
-        {workOrder.workorder[0].Status == "Completed" && (
+        {workOrder?.workorder[0]?.Status == "Completed" && (
           <div className={styles.completionSection}>
             <div className={styles.completionHeader}>
               <div>
@@ -289,7 +290,7 @@ const WorkOrderDetailsPage = () => {
               </p>
             </div>
             <div className={styles.btnRow}>
-              {workOrder.workorder[0].Status == "Open" &&  <button onClick={() => setWantsEdit(!wantsEdit)} className={styles.editBtn}><Edit className={styles.icon} /></button>}
+              {workOrder?.workorder[0]?.Status == "Open" &&  <button onClick={() => setWantsEdit(!wantsEdit)} className={styles.editBtn}><Edit className={styles.icon} /></button>}
              
               {wantsEdit && <button onClick={handleUpdateBtn} className={styles.updateBtn}>Update</button>}
             </div>
@@ -303,7 +304,7 @@ const WorkOrderDetailsPage = () => {
                 Type
               </div>
               <div className={styles.infoValue}>
-                {workOrder.workorder[0].Type == "Regular" ? "Regular Maintenance" : workOrder.workorder[0].Type == "PM" ? "Preventative Maintenance" : workOrder.workorder[0].Type}
+                {workOrder?.workorder[0]?.Type == "Regular" ? "Regular Maintenance" : workOrder?.workorder[0]?.Type == "PM" ? "Preventative Maintenance" : workOrder?.workorder[0]?.Type}
               </div>
             </div>
 
@@ -313,7 +314,7 @@ const WorkOrderDetailsPage = () => {
                 Status
               </div>
               <div className={styles.infoValue}>
-                {workOrder.workorder[0].Status}
+                {workOrder?.workorder[0]?.Status}
               </div>
             </div>
 
@@ -334,7 +335,7 @@ const WorkOrderDetailsPage = () => {
                     <option key={asset.compid} value={asset.compid}>{asset.comp_desc}</option>
                   ))}
               </select> : <div className={styles.infoValue}>
-                {workOrder.workorder[0].comp_desc}
+                {workOrder?.workorder[0]?.comp_desc}
               </div>}
             </div>
 
@@ -357,8 +358,8 @@ const WorkOrderDetailsPage = () => {
                     </option>
                   ))}
               </select> : <div className={styles.infoValue}>
-                {workOrder.workorder[0].FirstName}{" "}
-                {workOrder.workorder[0].LastName}
+                {workOrder?.workorder[0]?.FirstName}{" "}
+                {workOrder?.workorder[0]?.LastName}
               </div>}
 
             </div>
@@ -378,7 +379,7 @@ const WorkOrderDetailsPage = () => {
                 <option value="High">High</option>
                 <option value="Urgent">Urgent</option>
               </select> : <div className={styles.infoValue}>
-                {workOrder.workorder[0].Priority}
+                {workOrder?.workorder[0]?.Priority}
               </div>}
 
             </div>
@@ -394,7 +395,7 @@ const WorkOrderDetailsPage = () => {
                 className={styles.inputField}
                 value={dueDate}
               /> : <div className={styles.infoValue}>
-                {new Date(workOrder.workorder[0].DueDate).toDateString()}
+                {new Date(workOrder?.workorder[0]?.DueDate).toDateString()}
               </div>}
 
             </div>
@@ -405,7 +406,7 @@ const WorkOrderDetailsPage = () => {
                 Requestor
               </div>
               <div className={styles.infoValue}>
-                {workOrder.workorder[0].Requestor}
+                {workOrder?.workorder[0]?.Requestor}
               </div>
             </div>
 
@@ -415,10 +416,10 @@ const WorkOrderDetailsPage = () => {
                 Created On
               </div>
               <div className={styles.infoValue}>
-                {new Date(workOrder.workorder[0].Date).toDateString()}
+                {new Date(workOrder?.workorder[0]?.Date).toDateString()}
               </div>
             </div>
-            {workOrder.workorder[0].Type == "PM" && <div className={styles.infoItem}>
+            {workOrder?.workorder[0]?.Type == "PM" && <div className={styles.infoItem}>
               <div className={styles.infoLabel}>
                 <CalendarDays size={16} />
                 Pm Template Link
@@ -445,7 +446,7 @@ const WorkOrderDetailsPage = () => {
                 className={`${styles.inputField} ${styles.textareaField}`}
 
               /> : <div className={styles.descriptionCard}>
-                {workOrder.workorder[0].Description}
+                {workOrder?.workorder[0]?.Description}
               </div>}
 
             </div>
@@ -457,7 +458,7 @@ const WorkOrderDetailsPage = () => {
               </div>
 
               <div className={styles.photoGrid}>
-                {workOrder.photos?.map((photo) => (
+                {workOrder?.photos?.map((photo) => (
                   <div key={photo.id} className={styles.photoCard}>
                     <div className={styles.photoImageWrap}>
                       {wantsEdit && <p className={styles.photoHint}><XIcon /></p>}
@@ -492,7 +493,7 @@ const WorkOrderDetailsPage = () => {
               >
                 Back
               </button>
-              {workOrder.workorder[0].Status == "Open" && (
+              {workOrder?.workorder[0]?.Status == "Open" && (
                 <button
                   onClick={() => setModalOpen(true)}
                   type="button"

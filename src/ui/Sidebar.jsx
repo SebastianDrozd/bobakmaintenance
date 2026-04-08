@@ -1,6 +1,7 @@
 'use client'
 import {
   ChartAreaIcon,
+  ClipboardList,
   Factory,
   File,
   House,
@@ -9,12 +10,16 @@ import {
 } from "lucide-react";
 import styles from "../styles/ui/Sidebar.module.css";
 import { usePathname, useRouter } from "next/navigation";
+import { useContext } from "react";
+import { AuthContext } from "@/util/AuthProvider";
 
 
 const Sidebar = () => {
   const router = useRouter();
   const path = usePathname()
   console.log("this is path",path)
+  const auth = useContext(AuthContext)
+  const isAdmin = auth?.user?.role === "Admin";
   return (
     <aside className={styles.container}>
       <div className={styles.topSection}>
@@ -39,21 +44,27 @@ const Sidebar = () => {
             <File size={18} />
             <span>Work Orders</span>
           </li>
-          <li onClick={() => router.push("/dashboard/preventativemaintenance")} className={styles.listItem}>
-            <ChartAreaIcon size={18} />
-            <span>Preventative Maintenance</span>
-          </li>
-
+          {isAdmin && 
+            <li onClick={() => router.push("/dashboard/preventativemaintenance")} className={styles.listItem}>
+              <ChartAreaIcon size={18} />
+              <span>Preventative Maintenance</span>
+            </li>}
+        {isAdmin && (
           <li onClick={() => router.push("/dashboard/assets")} className={styles.listItem}>
             <Factory size={18} />
             <span>Assets</span>
           </li>
-
+        )}
           
 
           <li onClick={() => router.push("/dashboard/admin")} className={styles.listItem}>
             <ReceiptPoundSterling size={18} />
             <span>Admin</span>
+          </li>
+          <li onClick={() => router.push("/dashboard/logs")} className={styles.listItem}>
+          
+            <ClipboardList size={18} />
+            <span>Logs</span>
           </li>
         </ul>
       </nav>
