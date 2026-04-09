@@ -8,6 +8,13 @@ const loginUser = async (login) => {
         return response.data;
 }
 
+const logoutUser = async () => {
+        const response = await axios.post(BASE + "/logout",{},{
+            withCredentials : true
+        });
+        return response.data;
+}
+
 const getUser = async () => {
         const response = await axios.get(BASE + `/me`, {
             withCredentials : true,
@@ -17,5 +24,6 @@ const getUser = async () => {
 
 module.exports = {
     loginUser,
-    getUser
+    getUser,
+    logoutUser
 }

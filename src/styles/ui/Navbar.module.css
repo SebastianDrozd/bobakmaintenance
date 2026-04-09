@@ -27,7 +27,6 @@
     gap: 12px;
 }
 
-/* Create button (aligned with your style but improved slightly) */
 .newBtn {
     background-color: black;
     color: white;
@@ -42,7 +41,6 @@
     border: none;
 }
 
-/* Icon button (bell) */
 .iconBtn {
     position: relative;
     width: 42px;
@@ -60,7 +58,6 @@
     background: #f8fafc;
 }
 
-/* Notification dot */
 .notificationDot {
     position: absolute;
     top: 8px;
@@ -71,37 +68,98 @@
     border-radius: 999px;
 }
 
-/* User section */
-.user {
+.userMenuWrapper {
+    position: relative;
+}
+
+.userTrigger {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-left: 8px;
+    padding: 6px 10px 6px 8px;
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
-/* Avatar */
+.userTrigger:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
 .userAvatar {
     width: 36px;
     height: 36px;
     border-radius: 999px;
     background: #f8fafc;
-  
     display: flex;
     align-items: center;
     justify-content: center;
     color: #475569;
+    flex-shrink: 0;
 }
 
-/* Name */
 .userName {
     font-size: 14px;
     font-weight: 600;
     color: #0f172a;
+    white-space: nowrap;
 }
 
-/* Responsive (important for iPad) */
+.chevron {
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0px;
+    min-width: 180px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 8px;
+    z-index: 1000;
+}
+
+.dropdownItem {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0f172a;
+    text-align: left;
+}
+
+.dropdownItem:hover {
+    background: #f8fafc;
+}
+
 @media (max-width: 768px) {
     .userName {
         display: none;
+    }
+
+    .userTrigger {
+        padding-right: 8px;
+    }
+
+    .dropdown {
+        right: 0;
+        min-width: 150px;
     }
 }

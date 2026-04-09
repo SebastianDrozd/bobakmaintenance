@@ -45,26 +45,27 @@ const Sidebar = () => {
             <span>Work Orders</span>
           </li>
           {isAdmin && 
-            <li onClick={() => router.push("/dashboard/preventativemaintenance")} className={styles.listItem}>
+            <li onClick={() => router.push("/dashboard/preventativemaintenance")}  className={`${styles.listItem} ${path ==("/dashboard/preventativemaintenance") && styles.active}`}>
               <ChartAreaIcon size={18} />
               <span>Preventative Maintenance</span>
             </li>}
         {isAdmin && (
-          <li onClick={() => router.push("/dashboard/assets")} className={styles.listItem}>
+          <li onClick={() => router.push("/dashboard/assets")} className={`${styles.listItem} ${path ==("/dashboard/assets") && styles.active}`}>
             <Factory size={18} />
             <span>Assets</span>
           </li>
         )}
           
 
-          <li onClick={() => router.push("/dashboard/admin")} className={styles.listItem}>
-            <ReceiptPoundSterling size={18} />
-            <span>Admin</span>
-          </li>
-          <li onClick={() => router.push("/dashboard/logs")} className={styles.listItem}>
+          
+          <li onClick={() => router.push("/dashboard/logs")} className={`${styles.listItem} ${path ==("/dashboard/logs") && styles.active}`}>
           
             <ClipboardList size={18} />
             <span>Logs</span>
+          </li>
+          <li onClick={() => router.push("/dashboard/admin")}  className={`${styles.listItem} ${path ==("/dashboard/admin") && styles.active}`}>
+            <ReceiptPoundSterling size={18} />
+            <span>Admin</span>
           </li>
         </ul>
       </nav>

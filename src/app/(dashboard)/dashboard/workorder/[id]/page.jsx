@@ -22,13 +22,14 @@ import { closeWorkOrder, getWorkOrderById, updateWorkOrder } from "@/api/workord
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import CloseWorkOrderModal from "@/ui/CloseWorkOrderModal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getAssets } from "@/api/assets";
 import { getAllMechanics } from "@/api/mechanics";
 import toast, { Toaster } from "react-hot-toast";
 import { generateWorkOrderPdf } from "@/api/pdf";
+import { AuthContext } from "@/util/AuthProvider";
 
-const IMAGE_BASE = `http://localhost:5159/uploads/`;
+const IMAGE_BASE = `http://sebastian.bobak.local:5159/uploads/`;
 const WorkOrderDetailsPage = () => {
   const queryClient = useQueryClient();
   const params = useParams();
@@ -44,7 +45,7 @@ const WorkOrderDetailsPage = () => {
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("")
-
+  const auth = useContext(AuthContext);
   const { data: assets, } = useQuery({ queryKey: ["assets"], queryFn: () => getAssets(), enabled: !!wantsEdit });
   const { data: mechanics, isLoading: mechanicsLoading } = useQuery({ queryKey: ["mecahnics"], queryFn: () => getAllMechanics() });
   const { data: workOrder, isLoading, isError } = useQuery({ queryKey: ["workorder"], queryFn: () => getWorkOrderById(params.id), enabled: !!params.id });
@@ -115,7 +116,7 @@ const WorkOrderDetailsPage = () => {
     formData.append("DueDate", dueDate);
     formData.append("Mechanic", mechanic);
     formData.append("Asset", asset);
-
+    formData.append("UpdatedBy", auth.user.username)
     updateMutation.mutate(formData)
   }
 

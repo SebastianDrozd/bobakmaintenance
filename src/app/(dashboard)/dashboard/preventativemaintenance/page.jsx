@@ -284,12 +284,12 @@ const PreventativeMaintenancePage = () => {
                         </div>
 
                         <div className={styles.paginationControls}>
-                            {pmTemplates?.hasNextPage && <button className={styles.pageBtn}>Previous</button> }
-                           
+                            {pmTemplates?.hasNextPage && <button className={styles.pageBtn}>Previous</button>}
+
                             <button className={`${styles.pageNumber} ${styles.pageNumberActive}`}>
                                 1
                             </button>
-                                
+
                             {pmTemplates?.hasNextPage && <button className={styles.pageBtn}>Next</button>}
                         </div>
                     </div>
@@ -318,7 +318,7 @@ const CreatePmTaskModal = ({ onClose }) => {
     const [dueDate, setDueDate] = useState("")
     const auth = useContext(AuthContext);
     const queryClient = useQueryClient();
-
+    const [hasError, setHasError] = useState(false)
     const handleAddTask = () => {
         tasks.push(taskDescription)
         setTasks([...tasks])
@@ -345,6 +345,15 @@ const CreatePmTaskModal = ({ onClose }) => {
 
     const handleSavePm = (e) => {
         e.preventDefault()
+        if (!priority || !mechanic || !frequency || !dueDate || !description) {
+            setHasError(true);
+
+            setTimeout(() => {
+                setHasError(false)
+            }, 3000)
+            return
+        }
+
         const newPmTask = {
             Asset: asset,
             Priority: priority,
@@ -381,6 +390,8 @@ const CreatePmTaskModal = ({ onClose }) => {
                         <p className={styles.modalSubtitle}>
                             Add a recurring preventative maintenance task to the schedule.
                         </p>
+                        {hasError &&
+                            <p className={styles.error}>Please fill in all required fields </p>}
                     </div>
 
                     <button className={styles.closeBtn} onClick={onClose}>
@@ -405,7 +416,7 @@ const CreatePmTaskModal = ({ onClose }) => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Priority</label>
+                            <label className={styles.label}>Priority<span className={styles.asterisk}>*</span></label>
                             <select onChange={(e) => setPriority(e.target.value)} className={styles.modalInput}>
                                 <option value="">Select priority</option>
                                 <option value="Urgent">Urgent</option>
@@ -416,7 +427,7 @@ const CreatePmTaskModal = ({ onClose }) => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Assigned To</label>
+                            <label className={styles.label}>Assigned To <span className={styles.asterisk}>*</span></label>
                             <select onChange={(e) => setMechanic(e.target.value)} className={styles.modalInput}>
                                 <option value="">Select mechanic</option>
                                 {mechanics?.map((mechanic) => (
@@ -428,7 +439,7 @@ const CreatePmTaskModal = ({ onClose }) => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Frequency</label>
+                            <label className={styles.label}>Frequency <span className={styles.asterisk}>*</span></label>
                             <select onChange={(e) => setFrequency(e.target.value)} className={styles.modalInput}>
                                 <option value="">Select frequency</option>
                                 <option>Daily</option>
@@ -440,12 +451,12 @@ const CreatePmTaskModal = ({ onClose }) => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Next Due Date</label>
+                            <label className={styles.label}>Next Due Date <span className={styles.asterisk}>*</span></label>
                             <input onChange={(e) => setDueDate(e.target.value)} type="date" className={styles.modalInput} />
                         </div>
 
                         <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                            <label className={styles.label}>Task Description</label>
+                            <label className={styles.label}>Task Description <span className={styles.asterisk}>*</span></label>
                             <textarea
                                 onChange={(e) => setDescription(e.target.value)}
                                 className={styles.textarea}

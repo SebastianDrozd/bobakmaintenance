@@ -231,7 +231,7 @@
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
-  min-height: 600px;
+ 
 }
 
 .pmTable {
@@ -824,4 +824,13 @@
   color: #0f172a;
   transition: all 0.2s ease;
   outline: none;
+}
+.asterisk{
+  color: red;
+  font-size: 18px;
+  margin-left: 5px;
+}
+.error{
+  margin-top: 1em;
+  color : red;
 }

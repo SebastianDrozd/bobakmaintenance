@@ -26,7 +26,7 @@ const WorkOrderTable = () => {
       <div className={styles.tableCard}>
         <div className={styles.tableHeaderBar}>
           <div>
-            <h3 className={styles.tableTitle}>Current Queue</h3>
+            <h3 className={styles.tableTitle}>Priority Queue</h3>
             <p className={styles.tableSubtitle}>
               Showing all urgent and recently created work orders.
             </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Factory,
   Plus,
@@ -20,6 +20,7 @@ import styles from "../../../../styles/AssetsPage.module.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createNewAsset, getAssets, getAssetsQuery, getFullAssets } from "@/api/assets";
 import { useRouter } from "next/navigation";
+import { AuthContext } from "@/util/AuthProvider";
 
 const AssetsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -283,7 +284,7 @@ const CreateAssetModal = ({ onClose }) => {
   const [status, setStatus] = useState("Active");
   const [photos, setPhotos] = useState([]);
   const [serviceDate, setServiceDate] = useState("");
-
+  const auth = useContext(AuthContext);
   const handleSave = (e) => {
     e.preventDefault();
 
@@ -296,6 +297,7 @@ const CreateAssetModal = ({ onClose }) => {
     formData.append("serial_no", serial_no);
     formData.append("status", status);
     formData.append("service_date", serviceDate);
+    formData.append("CreatedBy", auth?.user.username); // replace with actual user info from context/auth
 
     photos.forEach((photo) => {
       formData.append("photos", photo);

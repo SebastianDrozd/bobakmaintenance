@@ -4,6 +4,8 @@ import { useContext } from "react";
 import styles from "../../../styles/DashboardPage.module.css"
 import DashboardCards from "@/components/DashboardCards";
 import WorkOrderTable from "@/components/WorkOrderTable";
+import WorkOrdersChart from "@/components/WorkOrderChart";
+import DashboardChartsRow from "@/components/DashboardChartsRow";
 const Dashboard = () => {
     //const auth = useContext(AuthContext)
     //const user = auth.user;
@@ -11,6 +13,8 @@ const Dashboard = () => {
     return (
         <div className={styles.container}>
             <DashboardCards/>
+            <WorkOrdersChart/>
+              <DashboardChartsRow/>
             <WorkOrderTable/>
         </div>
     )

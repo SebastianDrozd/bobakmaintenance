@@ -44,11 +44,19 @@ const updateAsset = async (id, asset) => {
     return response.data;
 }
 
+const deleteAsset = async (id) => {
+    const response = await axios.delete(`${BASE}/${id}`, {
+        withCredentials: true
+    })
+    return response.data;
+}
+
 module.exports = {
     getAssets,
     getFullAssets,
     getAssetsQuery,
     createNewAsset,
     getAssetById,
-    updateAsset
+    updateAsset,
+    deleteAsset
 }

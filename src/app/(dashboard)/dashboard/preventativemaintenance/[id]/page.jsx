@@ -16,10 +16,11 @@ import styles from "../../../../../styles/ViewPreventativeMaintenancePage.module
 import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deletePmTemplate, getPmTemplateById, updatePmTemplate } from "@/api/preventativeMaintenance";
-import { useEffect, useState } from "react";
-import getAllMechanics from "@/api/mechanics";
+import { useContext, useEffect, useState } from "react";
+import { getAllMechanics } from "@/api/mechanics";
 import { getAssets } from "@/api/assets";
 import toast, { Toaster } from "react-hot-toast";
+import { AuthContext } from "@/util/AuthProvider";
 
 const ViewPreventativeMaintenancePage = () => {
     const params = useParams();
@@ -33,7 +34,7 @@ const ViewPreventativeMaintenancePage = () => {
     const [nextRunDate,setNextRunDate] = useState('')
     const [frequency,setFrequency] = useState('')
     const [description,setDescription] = useState('')
-
+    const auth = useContext(AuthContext);
 
     const { data: template, isLoading, isError } = useQuery({queryKey: ["pmTemplate", params.id],queryFn: () => getPmTemplateById(params.id),enabled: !!params.id})
     const {data : mechanics} = useQuery({queryKey : ['mechanics'],queryFn : () => getAllMechanics()})
@@ -84,8 +85,10 @@ const ViewPreventativeMaintenancePage = () => {
             Priority : priority,
             NextRunDate : nextRunDate,
             Frequency : frequency,
-            Description : description
+            Description : description,
+            UpdatedBy : auth.user.username
         }
+        console.log(updateRequest)
         upDateMutation.mutate(updateRequest)
     }
     const handleDeleteBtn = () => {
@@ -162,6 +165,7 @@ const ViewPreventativeMaintenancePage = () => {
                                 Asset
                             </div>
                             {wantsEdit ? <select className={styles.inputField} value={asset} onChange={(e) => setAsset(e.target.value)}>
+                                <option value="">Select an asset</option>
                                 {assets?.map((asset) => (
                                     <option key={asset.compid} value={asset.compid}>
                                         {asset.comp_desc}

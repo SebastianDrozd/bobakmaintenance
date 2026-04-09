@@ -13,92 +13,22 @@ import {
     Wrench,
     CheckCircle2,
     Clock3,
+    FilterIcon,
+    RefreshCwIcon,
 } from "lucide-react";
 import styles from "../../../../styles/LogsPage.module.css";
-import { getLogs } from "@/api/logs";
+import { getLogsQuery } from "@/api/logs";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const mockEvents = [
-    {
-        id: 1,
-        type: "Work Order",
-        action: "Created",
-        title: "Created work order for leaking valve in blast chill cooler",
-        user: "Sebastian",
-        target: "WO-1042",
-        date: "2026-04-08 08:12 AM",
-    },
-    {
-        id: 2,
-        type: "Work Order",
-        action: "Modified",
-        title: "Updated priority and due date for mixer motor inspection",
-        user: "Uperez",
-        target: "WO-1038",
-        date: "2026-04-08 07:41 AM",
-    },
-    {
-        id: 3,
-        type: "Work Order",
-        action: "Completed",
-        title: "Closed work order for smokehouse fan replacement",
-        user: "Rgarcia",
-        target: "WO-1026",
-        date: "2026-04-07 04:26 PM",
-    },
-    {
-        id: 4,
-        type: "Preventative Maintenance",
-        action: "Created",
-        title: "Created PM template for checking Line 5 loader",
-        user: "Sebastian",
-        target: "PM-201",
-        date: "2026-04-07 02:11 PM",
-    },
-    {
-        id: 5,
-        type: "Preventative Maintenance",
-        action: "Modified",
-        title: "Updated frequency and task steps for ammonia inspection",
-        user: "Mjohnson",
-        target: "PM-188",
-        date: "2026-04-07 11:38 AM",
-    },
-    {
-        id: 6,
-        type: "Asset",
-        action: "Created",
-        title: "Added new asset: Vacuum Sealer",
-        user: "Sebastian",
-        target: "AST-1008",
-        date: "2026-04-06 03:18 PM",
-    },
-    {
-        id: 7,
-        type: "Asset",
-        action: "Modified",
-        title: "Updated owner and service date for Blast Chill Cooler",
-        user: "Tdawson",
-        target: "AST-1001",
-        date: "2026-04-06 10:05 AM",
-    },
-    {
-        id: 8,
-        type: "Admin",
-        action: "Created",
-        title: "Added new mechanic account for Mike Johnson",
-        user: "Sebastian",
-        target: "USR-014",
-        date: "2026-04-05 01:44 PM",
-    },
-];
+
 
 const getTypeIcon = (type) => {
     switch (type) {
         case "work_order":
             return <ClipboardList size={15} />;
-        case "preventative_maintenance":
+        case "pm_template":
             return <ShieldCheck size={15} />;
         case "asset":
             return <Factory size={15} />;
@@ -110,23 +40,48 @@ const getTypeIcon = (type) => {
 };
 
 const LogsPage = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [type, setType] = useState("");
+    const [action, setAction] = useState("");
+    const [pageButtons, setPageButtons] = useState([]);
     const { data: logs, isLoading, isError } = useQuery({
-        queryKey: ['logs'],
-        queryFn: getLogs
+        queryKey: ['logs', page, pageSize, searchTerm, type, action],
+        queryFn: () => getLogsQuery(page, pageSize, searchTerm, type, action)
     })
     const router = useRouter();
 
 
     const handleTargetClick = (event) => {
         console.log(event)
-        if(event.event_type === "work_order"){
+        if (event.event_type === "work_order") {
             router.push(`/dashboard/workorder/${event.entity_id}`);
+        }
+        if (event.event_type === "pm_template") {
+            router.push(`/dashboard/preventativemaintenance/${event.entity_id}`);
+        }
+        if (event.event_type === "asset") {
+            router.push(`/dashboard/assets/${event.entity_id}`);
         }
     }
 
-    if (isLoading) {
-        return <p>Loading...</p>
+
+    const clearSearch = () => {
+        setSearchTerm("");
+        setType("");
+        setAction("");
     }
+
+    useEffect(() => {
+        if (logs?.totalPages) {
+            const buttons = [];
+            for (let i = page; i < page + 5 && i <= logs.totalPages; i++) {
+                buttons.push(i);
+            }
+            setPageButtons(buttons);
+        }
+    }, [logs]);
     return (
         <div className={styles.page}>
             <div className={styles.container}>
@@ -143,32 +98,56 @@ const LogsPage = () => {
                     </div>
                 </div>
 
-               
+
 
                 <div className={styles.controlsCard}>
                     <div className={styles.controlsTopRow}>
                         <div className={styles.searchInputWrap}>
                             <Search size={16} />
                             <input
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 className={styles.inputField}
                                 placeholder="Search by event title, user, target ID, or type"
                             />
                         </div>
 
                         <div className={styles.actionsRow}>
-                            <button className={styles.secondaryBtn}>
-                                <Filter size={16} />
-                                Type
-                            </button>
+                            <div className={styles.selectWrap}>
+                                <FilterIcon size={16} className={styles.selectIcon} />
 
-                            <button className={styles.secondaryBtn}>
-                                <SlidersHorizontal size={16} />
-                                Action
-                            </button>
+                                <select
+                                    className={styles.statusBtn}
+                                    value={type}
+                                    onChange={(e) => setType(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Type
+                                    </option>
+                                    <option value="work_order">Work Order</option>
+                                    <option value="pm_template">PM Template</option>
+                                    <option value="asset">Asset</option>
+                                </select>
+                            </div>
+                            <div className={styles.selectWrap}>
+                                <FilterIcon size={16} className={styles.selectIcon} />
 
-                            <button className={styles.secondaryBtn}>
-                                <User size={16} />
-                                User
+                                <select
+                                    className={styles.statusBtn}
+                                    value={action}
+                                    onChange={(e) => setAction(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Action
+                                    </option>
+                                    <option value="Created">Created</option>
+                                    <option value="Modified">Modified</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Deleted">Deleted</option>
+                                </select>
+                            </div>
+                            <button onClick={clearSearch} className={styles.secondaryBtn}>
+                                <RefreshCwIcon size={16} />
                             </button>
                         </div>
                     </div>
@@ -184,13 +163,25 @@ const LogsPage = () => {
                     </div>
                 </div>
 
-                <div className={styles.tableCard}>
+                {isLoading ? "" : <div className={styles.tableCard}>
                     <div className={styles.tableHeaderBar}>
                         <div>
                             <h3 className={styles.tableTitle}>Recent Activity</h3>
                             <p className={styles.tableSubtitle}>
                                 Master list of recent changes and events happening across the app.
                             </p>
+                        </div>
+                        <div>
+                            <select
+                                value={pageSize}
+                                className={styles.select}
+                                onChange={(e) => setPageSize(Number(e.target.value))}
+                            >
+                                <option value={10}>10</option>
+                                <option value={25}>25</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
+                            </select>
                         </div>
                     </div>
 
@@ -208,7 +199,7 @@ const LogsPage = () => {
                             </thead>
 
                             <tbody>
-                                {logs?.map((event) => (
+                                {logs?.items.map((event) => (
                                     <tr key={event.event_id} className={styles.tableRow}>
                                         <td className={styles.cell}>
                                             <div className={styles.typeWrap}>
@@ -222,13 +213,16 @@ const LogsPage = () => {
                                         <td className={styles.cell}>
                                             <span
                                                 className={`${styles.badge} ${event.event_action === "Created"
-                                                        ? styles.createdBadge
-                                                        : event.event_action === "Modified"
-                                                            ? styles.modifiedBadge
+                                                    ? styles.createdBadge
+                                                    : event.event_action === "Modified"
+                                                        ? styles.modifiedBadge
+                                                        : event.event_action === "Deleted"
+                                                            ? styles.deletedBadge
                                                             : styles.completedBadge
                                                     }`}
                                             >
                                                 {event.event_action === "Created" && <Plus size={13} />}
+                                                {event.event_action === "Deleted" && <Wrench size={13} />}
                                                 {event.event_action === "Modified" && <Pencil size={13} />}
                                                 {event.event_action === "Completed" && <CheckCircle2 size={13} />}
                                                 {event.event_action}
@@ -250,7 +244,7 @@ const LogsPage = () => {
 
                                         <td className={styles.cell}>
                                             <span className={styles.targetPill} onClick={() => handleTargetClick(event)}>
-                                                {event.entity_id}
+                                                {event.event_action !== "Deleted" && event.entity_id}
                                             </span>
                                         </td>
 
@@ -263,18 +257,26 @@ const LogsPage = () => {
 
                     <div className={styles.paginationBar}>
                         <div className={styles.paginationInfo}>
-                            Showing <strong>1–8</strong> of <strong>{mockEvents.length}</strong> events
+                            Showing <strong>1–8</strong> of <strong></strong> events
                         </div>
 
                         <div className={styles.paginationControls}>
-                            <button className={styles.pageBtn}>Previous</button>
-                            <button className={`${styles.pageNumber} ${styles.pageNumberActive}`}>
-                                1
-                            </button>
-                            <button className={styles.pageBtn}>Next</button>
+                            {logs?.hasPreviousPage && <button onClick={() => setPage(page - 1)} className={styles.pageBtn}>Previous</button>}
+
+                            {pageButtons.map((btnPage) => (
+                                <button
+                                    key={btnPage}
+                                    onClick={() => setPage(btnPage)}
+                                    className={`${styles.pageNumber} ${page === btnPage ? styles.pageNumberActive : ""}`}
+                                >
+                                    {btnPage}
+                                </button>
+                            ))}
+                            {logs?.hasNextPage && <button onClick={() => setPage(page + 1)} className={styles.pageBtn}>Next</button>}
                         </div>
                     </div>
-                </div>
+                </div>}
+
             </div>
         </div>
     );

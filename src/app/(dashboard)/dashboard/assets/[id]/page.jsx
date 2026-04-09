@@ -15,13 +15,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import styles from "../../../../../styles/ViewAssetPage.module.css";
-import { getAssetById, updateAsset } from "@/api/assets";
-import { useParams } from "next/navigation";
+import { deleteAsset, getAssetById, updateAsset } from "@/api/assets";
+import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { AuthContext } from "@/util/AuthProvider";
 
-const IMAGE_BASE = "http://localhost:5159/uploads/assets/";
+const IMAGE_BASE = "http://sebastian.bobak.local:5159/uploads/assets/";
 
 const ViewAssetPage = () => {
   const params = useParams();
@@ -42,7 +43,8 @@ const ViewAssetPage = () => {
   const [existingImages, setExistingImages] = useState([]);
   const [removedImageIds, setRemovedImageIds] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
-
+  const auth = useContext(AuthContext)
+  const router = useRouter();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["asset", assetId],
     queryFn: () => getAssetById(assetId),
@@ -150,7 +152,7 @@ const ViewAssetPage = () => {
     formData.append("last_service_date", last_service_date || "");
     formData.append("next_service_date", next_service_date || "");
     formData.append("full_desc", full_desc || "");
-
+    formData.append("UpdatedBy", auth?.user.username); // replace with actual user info from context/auth
     removedImageIds.forEach((id) => {
       formData.append("removedImageIds", id.toString());
     });
@@ -179,6 +181,17 @@ const ViewAssetPage = () => {
       toast.error("Failed to update asset. Please try again.");
     },
   })
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteAsset(assetId),
+    onSuccess: () => {
+      toast.success("Asset deleted successfully!");
+      router.push("/dashboard/assets");
+    },
+    onError: (error) => {
+      console.error("Failed to delete asset:", error);
+      toast.error("Failed to delete asset. Please try again.");
+    },
+  });
 
   const formatDateForInput = (value) => {
     if (!value) return "";
@@ -186,7 +199,11 @@ const ViewAssetPage = () => {
   };
 
   const currentStatus = wantsEdit ? status : data?.asset?.status;
-
+  const handleDeleteBtn = () => {
+    if (confirm("Are you sure you want to delete this asset?")) {
+      deleteMutation.mutate();
+    }
+  };
   console.log(data)
   if (isLoading) {
     return <div>Loading...</div>;
@@ -201,7 +218,7 @@ const ViewAssetPage = () => {
       <div className={styles.container}>
         <div className={styles.headerCard}>
           <div className={styles.headerLeft}>
-           
+
 
             <div>
               <p className={styles.eyebrow}>Assets</p>
@@ -617,13 +634,27 @@ const ViewAssetPage = () => {
                 </div>
               )}
             </div>
+            <div className={styles.footer}>
+              <div className={styles.helperText}>
+                
+              </div>
+
+              <div className={styles.buttonRow}>
+                <button type="button" className={styles.secondaryBtn} onClick={() => router.back()}>
+                  Back
+                </button>
+                <button type="button" className={styles.deleteBtn} onClick={handleDeleteBtn}>
+                  Delete Asset
+                </button>
+              </div>
+            </div>
           </div>
 
-          
+
         </div>
       </div>
-        <Toaster position="bottom-right" />
-    
+      <Toaster position="bottom-right" />
+
     </div>
   );
 };
